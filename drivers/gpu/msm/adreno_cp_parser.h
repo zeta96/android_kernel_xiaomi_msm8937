@@ -8,8 +8,12 @@
 
 #include "adreno.h"
 
+#if defined(CONFIG_ARCH_MSM8917) | defined(CONFIG_ARCH_MSM8920)
 extern const unsigned int a3xx_cp_addr_regs[];
+#endif
+#ifdef CONFIG_ARCH_MSM8916
 extern const unsigned int a4xx_cp_addr_regs[];
+#endif
 
 /*
  * struct adreno_ib_object - Structure containing information about an
@@ -130,9 +134,23 @@ static inline int adreno_cp_parser_getreg(struct adreno_device *adreno_dev,
 	if (reg_enum == ADRENO_CP_ADDR_MAX)
 		return -EEXIST;
 
+<<<<<<< HEAD
 	if (!adreno_is_a3xx(adreno_dev))
 		return -EEXIST;
 	return a3xx_cp_addr_regs[reg_enum];
+=======
+#if defined(CONFIG_ARCH_MSM8917) | defined(CONFIG_ARCH_MSM8920)
+	if (adreno_is_a3xx(adreno_dev))
+		return a3xx_cp_addr_regs[reg_enum];
+#endif
+#ifdef CONFIG_ARCH_MSM8916
+	if (adreno_is_a4xx(adreno_dev))
+		return a4xx_cp_addr_regs[reg_enum];
+#endif
+#if defined(CONFIG_ARCH_MSM8937) | defined(CONFIG_ARCH_MSM8940) | defined(CONFIG_ARCH_MSM8953) | defined(CONFIG_ARCH_MSM8996) | defined(CONFIG_ARCH_MSMCOBALT) | defined(CONFIG_ARCH_SDM450)
+		return -EEXIST;
+#endif
+>>>>>>> d1478f2c948c (gpu: msm_adreno: Compile only Adreno codes specific to chipset)
 }
 
 /*
@@ -153,8 +171,21 @@ static inline int adreno_cp_parser_regindex(struct adreno_device *adreno_dev,
 	int i;
 	const unsigned int *regs;
 
+<<<<<<< HEAD
 	if (!adreno_is_a3xx(adreno_dev))
+=======
+#ifdef CONFIG_ARCH_MSM8916
+	if (adreno_is_a4xx(adreno_dev))
+		regs = a4xx_cp_addr_regs;
+#endif
+#if defined(CONFIG_ARCH_MSM8917) | defined(CONFIG_ARCH_MSM8920)
+	if (adreno_is_a3xx(adreno_dev))
+		regs = a3xx_cp_addr_regs;
+#endif
+#if defined(CONFIG_ARCH_MSM8937) | defined(CONFIG_ARCH_MSM8940) | defined(CONFIG_ARCH_MSM8953) | defined(CONFIG_ARCH_MSM8996) | defined(CONFIG_ARCH_MSMCOBALT) | defined(CONFIG_ARCH_SDM450)
+>>>>>>> d1478f2c948c (gpu: msm_adreno: Compile only Adreno codes specific to chipset)
 		return -EEXIST;
+#endif
 
 	regs = a3xx_cp_addr_regs;
 

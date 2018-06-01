@@ -33,6 +33,7 @@ msm_adreno-y += \
 	adreno_snapshot.o \
 	adreno_coresight.o \
 	adreno_trace.o \
+<<<<<<< HEAD
 	adreno_a3xx.o \
 	adreno_a5xx.o \
 	adreno_a6xx.o \
@@ -43,6 +44,8 @@ msm_adreno-y += \
 	adreno_a6xx_preempt.o \
 	adreno_a6xx_gmu.o \
 	adreno_a6xx_rgmu.o \
+=======
+>>>>>>> d1478f2c948c (gpu: msm_adreno: Compile only Adreno codes specific to chipset)
 	adreno_sysfs.o \
 	adreno.o \
 	adreno_cp_parser.o \
@@ -51,6 +54,16 @@ msm_adreno-y += \
 msm_adreno-$(CONFIG_QCOM_KGSL_IOMMU) += adreno_iommu.o
 msm_adreno-$(CONFIG_DEBUG_FS) += adreno_debugfs.o adreno_profile.o
 msm_adreno-$(CONFIG_COMPAT) += adreno_compat.o
+msm_adreno-$(CONFIG_ARCH_MSM8916) += adreno_a4xx.o adreno_a4xx_snapshot.o adreno_a4xx_preempt.o
+msm_adreno-$(CONFIG_ARCH_MSM8917) += adreno_a3xx.o adreno_a3xx_snapshot.o
+msm_adreno-$(CONFIG_ARCH_MSM8920) += adreno_a3xx.o adreno_a3xx_snapshot.o
+msm_adreno-$(CONFIG_ARCH_MSM8937) += adreno_a5xx.o adreno_a5xx_snapshot.o adreno_a5xx_preempt.o
+msm_adreno-$(CONFIG_ARCH_MSM8940) += adreno_a5xx.o adreno_a5xx_snapshot.o adreno_a5xx_preempt.o
+msm_adreno-$(CONFIG_ARCH_MSM8953) += adreno_a5xx.o adreno_a5xx_snapshot.o adreno_a5xx_preempt.o
+msm_adreno-$(CONFIG_ARCH_MSM8996) += adreno_a5xx.o adreno_a5xx_snapshot.o adreno_a5xx_preempt.o
+msm_adreno-$(CONFIG_ARCH_MSMCOBALT) += adreno_a5xx.o adreno_a5xx_snapshot.o adreno_a5xx_preempt.o
+msm_adreno-$(CONFIG_ARCH_SDM450) += adreno_a5xx.o adreno_a5xx_snapshot.o adreno_a5xx_preempt.o
+msm_adreno-$(CONFIG_ARCH_SDM845) += adreno_a6xx.o adreno_a6xx_snapshot.o adreno_a6xx_preempt.o
 
 msm_kgsl_core-objs = $(msm_kgsl_core-y)
 msm_adreno-objs = $(msm_adreno-y)

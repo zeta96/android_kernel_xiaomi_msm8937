@@ -5,6 +5,7 @@
 
 #define ANY_ID (~0)
 
+<<<<<<< HEAD
 #define DEFINE_ADRENO_REV(_rev, _core, _major, _minor, _patchid) \
 	.gpurev = _rev, .core = _core, .major = _major, .minor = _minor, \
 	.patchid = _patchid
@@ -24,6 +25,16 @@ static const struct adreno_reglist a306_vbif_regs[] = {
 static const struct adreno_a3xx_core adreno_gpu_core_a306 = {
 	.base = {
 		DEFINE_ADRENO_REV(ADRENO_REV_A306, 3, 0, 6, 0),
+=======
+static const struct adreno_gpu_core adreno_gpulist[] = {
+#if defined(CONFIG_ARCH_MSM8917) | defined(CONFIG_ARCH_MSM8920)
+	{
+		.gpurev = ADRENO_REV_A306,
+		.core = 3,
+		.major = 0,
+		.minor = 6,
+		.patchid = 0x00,
+>>>>>>> d1478f2c948c (gpu: msm_adreno: Compile only Adreno codes specific to chipset)
 		.features = ADRENO_SOFT_FAULT_DETECT,
 		.gpudev = &adreno_a3xx_gpudev,
 		.gmem_size = SZ_128K,
@@ -70,6 +81,7 @@ static const struct adreno_a3xx_core adreno_gpu_core_a304 = {
 		.busy_mask = 0x7ffffffe,
 		.bus_width = 0,
 	},
+<<<<<<< HEAD
 	.pm4fw_name = "a300_pm4.fw",
 	.pfpfw_name = "a300_pfp.fw",
 	.vbif = a304_vbif_regs,
@@ -185,6 +197,116 @@ static const struct adreno_reglist a530_vbif_regs[] = {
 static const struct adreno_a5xx_core adreno_gpu_core_a530v2 = {
 	.base = {
 		DEFINE_ADRENO_REV(ADRENO_REV_A530, 5, 3, 0, 1),
+=======
+#endif /* CONFIG_ARCH_MSM8917 | CONFIG_ARCH_MSM8920 */
+#ifdef CONFIG_ARCH_MSM8916
+	{
+		.gpurev = ADRENO_REV_A405,
+		.core = 4,
+		.major = 0,
+		.minor = 5,
+		.patchid = ANY_ID,
+		.features = ADRENO_SOFT_FAULT_DETECT,
+		.pm4fw_name = "a420_pm4.fw",
+		.pfpfw_name = "a420_pfp.fw",
+		.gpudev = &adreno_a4xx_gpudev,
+		.gmem_size = SZ_256K,
+		.busy_mask = 0x7FFFFFFE,
+	},
+	{
+		.gpurev = ADRENO_REV_A420,
+		.core = 4,
+		.major = 2,
+		.minor = 0,
+		.patchid = ANY_ID,
+		.features = ADRENO_USES_OCMEM | ADRENO_WARM_START |
+			ADRENO_USE_BOOTSTRAP | ADRENO_SOFT_FAULT_DETECT,
+		.pm4fw_name = "a420_pm4.fw",
+		.pfpfw_name = "a420_pfp.fw",
+		.gpudev = &adreno_a4xx_gpudev,
+		.gmem_size = (SZ_1M + SZ_512K),
+		.pm4_jt_idx = 0x901,
+		.pm4_jt_addr = 0x300,
+		.pfp_jt_idx = 0x401,
+		.pfp_jt_addr = 0x400,
+		.pm4_bstrp_size = 0x06,
+		.pfp_bstrp_size = 0x28,
+		.pfp_bstrp_ver = 0x4ff083,
+		.busy_mask = 0x7FFFFFFE,
+	},
+	{
+		.gpurev = ADRENO_REV_A430,
+		.core = 4,
+		.major = 3,
+		.minor = 0,
+		.patchid = ANY_ID,
+		.features = ADRENO_USES_OCMEM  | ADRENO_WARM_START |
+			ADRENO_USE_BOOTSTRAP | ADRENO_SPTP_PC | ADRENO_PPD |
+			ADRENO_CONTENT_PROTECTION | ADRENO_PREEMPTION |
+			ADRENO_SOFT_FAULT_DETECT,
+		.pm4fw_name = "a420_pm4.fw",
+		.pfpfw_name = "a420_pfp.fw",
+		.gpudev = &adreno_a4xx_gpudev,
+		.gmem_size = (SZ_1M + SZ_512K),
+		.pm4_jt_idx = 0x901,
+		.pm4_jt_addr = 0x300,
+		.pfp_jt_idx = 0x401,
+		.pfp_jt_addr = 0x400,
+		.pm4_bstrp_size = 0x06,
+		.pfp_bstrp_size = 0x28,
+		.pfp_bstrp_ver = 0x4ff083,
+		.shader_offset = 0x20000,
+		.shader_size = 0x10000,
+		.num_protected_regs = 0x18,
+		.busy_mask = 0x7FFFFFFE,
+	},
+	{
+		.gpurev = ADRENO_REV_A418,
+		.core = 4,
+		.major = 1,
+		.minor = 8,
+		.patchid = ANY_ID,
+		.features = ADRENO_USES_OCMEM  | ADRENO_WARM_START |
+			ADRENO_USE_BOOTSTRAP | ADRENO_SPTP_PC |
+			ADRENO_SOFT_FAULT_DETECT,
+		.pm4fw_name = "a420_pm4.fw",
+		.pfpfw_name = "a420_pfp.fw",
+		.gpudev = &adreno_a4xx_gpudev,
+		.gmem_size = (SZ_512K),
+		.pm4_jt_idx = 0x901,
+		.pm4_jt_addr = 0x300,
+		.pfp_jt_idx = 0x401,
+		.pfp_jt_addr = 0x400,
+		.pm4_bstrp_size = 0x06,
+		.pfp_bstrp_size = 0x28,
+		.pfp_bstrp_ver = 0x4ff083,
+		.shader_offset = 0x20000, /* SP and TP addresses */
+		.shader_size = 0x10000,
+		.num_protected_regs = 0x18,
+		.busy_mask = 0x7FFFFFFE,
+	},
+#endif /* CONFIG_ARCH_MSM8916 */
+#if defined(CONFIG_ARCH_MSM8937) | defined(CONFIG_ARCH_MSM8940) | defined(CONFIG_ARCH_MSM8953) | defined(CONFIG_ARCH_MSM8996) | defined(CONFIG_ARCH_MSMCOBALT) | defined(CONFIG_ARCH_SDM450)
+	{
+		.gpurev = ADRENO_REV_A530,
+		.core = 5,
+		.major = 3,
+		.minor = 0,
+		.patchid = 0,
+		.pm4fw_name = "a530v1_pm4.fw",
+		.pfpfw_name = "a530v1_pfp.fw",
+		.gpudev = &adreno_a5xx_gpudev,
+		.gmem_size = SZ_1M,
+		.num_protected_regs = 0x20,
+		.busy_mask = 0xFFFFFFFE,
+	},
+	{
+		.gpurev = ADRENO_REV_A530,
+		.core = 5,
+		.major = 3,
+		.minor = 0,
+		.patchid = 1,
+>>>>>>> d1478f2c948c (gpu: msm_adreno: Compile only Adreno codes specific to chipset)
 		.features = ADRENO_GPMU | ADRENO_SPTP_PC | ADRENO_LM |
 			ADRENO_PREEMPTION | ADRENO_64BIT |
 			ADRENO_CONTENT_PROTECTION,
@@ -616,6 +738,7 @@ static const struct adreno_a5xx_core adreno_gpu_core_a508 = {
 		.busy_mask = 0xfffffffe,
 		.bus_width = 32,
 	},
+<<<<<<< HEAD
 	.pm4fw_name = "a530_pm4.fw",
 	.pfpfw_name = "a530_pfp.fw",
 	.zap_name = "a508_zap",
@@ -781,6 +904,36 @@ static const struct a6xx_protected_regs a630_protected_regs[] = {
 static const struct adreno_a6xx_core adreno_gpu_core_a630v2 = {
 	.base = {
 		DEFINE_ADRENO_REV(ADRENO_REV_A630, 6, 3, 0, ANY_ID),
+=======
+#endif /* CONFIG_ARCH_MSM8937 | CONFIG_ARCH_MSM8940 | CONFIG_ARCH_MSM8953 | CONFIG_ARCH_MSM8996 | CONFIG_ARCH_MSMCOBALT | CONFIG_ARCH_SDM450 */
+#ifdef CONFIG_ARCH_SDM845
+	{
+		.gpurev = ADRENO_REV_A630,
+		.core = 6,
+		.major = 3,
+		.minor = 0,
+		.patchid = 0,
+		.features = ADRENO_64BIT | ADRENO_RPMH |
+			ADRENO_GPMU | ADRENO_CONTENT_PROTECTION | ADRENO_LM,
+		.sqefw_name = "a630_sqe.fw",
+		.zap_name = "a630_zap",
+		.gpudev = &adreno_a6xx_gpudev,
+		.gmem_size = SZ_1M,
+		.num_protected_regs = 0x20,
+		.busy_mask = 0xFFFFFFFE,
+		.gpmufw_name = "a630_gmu.bin",
+		.gpmu_major = 0x1,
+		.gpmu_minor = 0x003,
+		.gpmu_tsens = 0x000C000D,
+		.max_power = 5448,
+	},
+	{
+		.gpurev = ADRENO_REV_A630,
+		.core = 6,
+		.major = 3,
+		.minor = 0,
+		.patchid = ANY_ID,
+>>>>>>> d1478f2c948c (gpu: msm_adreno: Compile only Adreno codes specific to chipset)
 		.features = ADRENO_64BIT | ADRENO_RPMH | ADRENO_IFPC |
 			ADRENO_GPMU | ADRENO_CONTENT_PROTECTION |
 			ADRENO_IOCOHERENT | ADRENO_PREEMPTION,
@@ -789,6 +942,7 @@ static const struct adreno_a6xx_core adreno_gpu_core_a630v2 = {
 		.busy_mask = 0xfffffffe,
 		.bus_width = 32,
 	},
+<<<<<<< HEAD
 	.prim_fifo_threshold = 0x0018000,
 	.gmu_major = 1,
 	.gmu_minor = 3,
@@ -1530,4 +1684,7 @@ static const struct adreno_gpu_core *adreno_gpulist[] = {
 	&adreno_gpu_core_a616.base,
 	&adreno_gpu_core_a610.base,
 	&adreno_gpu_core_a702.base,
+=======
+#endif /* CONFIG_ARCH_SDM845 */
+>>>>>>> d1478f2c948c (gpu: msm_adreno: Compile only Adreno codes specific to chipset)
 };
