@@ -718,9 +718,11 @@ struct request_queue {
 #define QUEUE_FLAG_SCSI_PASSTHROUGH 27	/* queue supports SCSI commands */
 #define QUEUE_FLAG_QUIESCED    28	/* queue has been quiesced */
 
-#define QUEUE_FLAG_DEFAULT      ((1 << QUEUE_FLAG_SAME_COMP))
+#define QUEUE_FLAG_DEFAULT      ((1 << QUEUE_FLAG_SAME_COMP)	|	\
+				 (1 << QUEUE_FLAG_NOXMERGES))
 
-#define QUEUE_FLAG_MQ_DEFAULT   ((1 << QUEUE_FLAG_SAME_COMP))
+#define QUEUE_FLAG_MQ_DEFAULT   ((1 << QUEUE_FLAG_SAME_COMP)	|	\
+				 (1 << QUEUE_FLAG_NOXMERGES))
 
 void blk_queue_flag_set(unsigned int flag, struct request_queue *q);
 void blk_queue_flag_clear(unsigned int flag, struct request_queue *q);
