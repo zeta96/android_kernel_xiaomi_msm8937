@@ -6308,11 +6308,11 @@ static bool dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
 
 	}
 
-dequeue_throttle:
-	if (!se)
-		sub_nr_running(rq, 1);
+	/* At this point se is NULL and we are at root level*/
+	sub_nr_running(rq, 1);
 
-	util_est_update(&rq->cfs, p, task_sleep);
+dequeue_throttle:
+        util_est_update(&rq->cfs, p, task_sleep);
 	hrtick_update(rq);
 
 	return true;
