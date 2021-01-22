@@ -1483,7 +1483,7 @@ static struct regulator *create_regulator(struct regulator_dev *rdev,
 {
 	struct regulator *regulator;
 	char buf[REG_STR_SIZE];
-	int err, size;
+	int err = 0, size;
 
 	regulator = kzalloc(sizeof(*regulator), GFP_KERNEL);
 	if (regulator == NULL)
@@ -1519,8 +1519,8 @@ static struct regulator *create_regulator(struct regulator_dev *rdev,
 			goto overflow_err;
 	}
 
-	regulator->debugfs = debugfs_create_dir(regulator->supply_name,
-						rdev->debugfs);
+	if (err != -EEXIST)
+		regulator->debugfs = debugfs_create_dir(regulator->supply_name, rdev->debugfs);
 	if (!regulator->debugfs) {
 		rdev_dbg(rdev, "Failed to create debugfs directory\n");
 	} else {
