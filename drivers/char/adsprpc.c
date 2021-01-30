@@ -1359,8 +1359,8 @@ static int context_build_overlap(struct smq_invoke_ctx *ctx)
 	int inbufs = REMOTE_SCALARS_INBUFS(ctx->sc);
 	int outbufs = REMOTE_SCALARS_OUTBUFS(ctx->sc);
 	int nbufs = inbufs + outbufs;
-	struct overlap max_nonion;
-	struct overlap max_ion;
+	struct overlap max_nonion = { 0 };
+	struct overlap max_ion = { 0 };
 	struct overlap *max;
 
 	for (i = 0; i < nbufs; ++i) {
