@@ -5846,7 +5846,7 @@ static int selinux_netlink_send(struct sock *sk, struct sk_buff *skb)
 		} else if (rc == -EINVAL) {
 			/* -EINVAL is a missing msg/perm mapping */
 			pr_warn_ratelimited("SELinux: unrecognized netlink"
-				" message: protocol=%hu nlmsg_type=%hu sclass=%s"
+				" message: protocol=%d nlmsg_type=%hu sclass=%s"
 				" pid=%d comm=%s\n",
 				sk->sk_protocol, nlh->nlmsg_type,
 				secclass_map[sclass - 1].name,
