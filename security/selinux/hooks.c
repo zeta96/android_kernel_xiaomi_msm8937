@@ -5832,7 +5832,7 @@ static int selinux_netlink_send(struct sock *sk, struct sk_buff *skb)
 	if (err) {
 		if (err == -EINVAL) {
 			pr_warn_ratelimited("SELinux: unrecognized netlink"
-			       " message: protocol=%hu nlmsg_type=%hu sclass=%s"
+			       " message: protocol=%d nlmsg_type=%hu sclass=%s"
 			       " pid=%d comm=%s\n",
 			       sk->sk_protocol, nlh->nlmsg_type,
 			       secclass_map[sksec->sclass - 1].name,
