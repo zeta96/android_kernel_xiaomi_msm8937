@@ -419,7 +419,7 @@ static int cpufreq_set_cur_state(struct thermal_cooling_device *cdev,
 
 	/* Update thermal pressure in case of maximum frequency capping */
 	{
-		struct cpumask *cpus = cpufreq_cdev->policy->cpus;
+		struct cpumask *cpus = cpufreq_cdev->policy->related_cpus;
 		unsigned long max_capacity = arch_scale_cpu_capacity(NULL, cpumask_first(cpus));
 		unsigned long capacity = (clip_freq * max_capacity) / cpufreq_cdev->policy->cpuinfo.max_freq;
 
