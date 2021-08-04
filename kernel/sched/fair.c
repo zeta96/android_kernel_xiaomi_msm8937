@@ -6834,7 +6834,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
 		time = local_clock();
 	}
 
-	for_each_cpu_wrap(cpu, cpus, target) {
+	for_each_cpu_wrap(cpu, cpus, target + 1) {
 		if (!--nr)
 			return -1;
 		if (cpu_isolated(cpu))
