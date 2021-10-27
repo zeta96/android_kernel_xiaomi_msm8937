@@ -233,7 +233,7 @@ static int binder_install_single_page(struct binder_alloc *alloc,
 	 * doesn't necessarily need to return -ENOMEM, if lru_page
 	 * has been installed, we can still return 0(success).
 	 */
-	page = alloc_page(GFP_KERNEL | __GFP_HIGHMEM | __GFP_ZERO);
+	page = alloc_page(GFP_KERNEL | __GFP_ZERO);
 
 	/*
 	 * Protected with mmap_sem in write mode as multiple tasks
