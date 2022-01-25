@@ -110,7 +110,15 @@ config ANDROID_KABI_RESERVE
 	  slightly smaller but will NOT be supported by the Google Android
 	  kernel team.
 
-	  If even slightly unsure, say Y.
+	  If even slightly unsure, say Y
+
+config ANDROID_BINDER_LOGS
+	bool "Android Binder Logging"
+	depends on ANDROID_BINDERFS
+	help
+	  Enables binder_logs directory in binderfs and debug_mask for dmesg
+	  logging. Needed for DEBUG_FS.
+	  This option impacts performance.
 
 endif # if ANDROID
 
