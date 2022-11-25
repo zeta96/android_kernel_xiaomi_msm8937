@@ -1276,7 +1276,7 @@ done:
 }
 
 static int uclamp_validate(struct task_struct *p,
-			   const struct sched_attr *attr)
+			   const struct sched_attr *attr, bool user)
 {
 	int util_min = p->uclamp_req[UCLAMP_MIN].value;
 	int util_max = p->uclamp_req[UCLAMP_MAX].value;
@@ -1301,11 +1301,23 @@ static int uclamp_validate(struct task_struct *p,
 	/*
 	 * We have valid uclamp attributes; make sure uclamp is enabled.
 	 *
-	 * We need to do that here, because enabling static branches is a
-	 * blocking operation which obviously cannot be done while holding
+	 * We need to do that here, because enabling static branches is
+	 * a blocking operation which obviously cannot be done while holding
 	 * scheduler locks.
+	 *
+	 * We only enable the static key if this was initiated by user space
+	 * request. There should be no in-kernel users of uclamp except to
+	 * implement things like inheritance like in binder. These in-kernel
+	 * callers can rightfully be called be sometimes in_atomic() context
+	 * which is invalid context to enable the key in. The enabling path
+	 * unconditionally holds the cpus_read_lock() which might_sleep().
 	 */
+<<<<<<< HEAD
 	sched_uclamp_enable();
+=======
+	if (user)
+		static_branch_enable(&sched_uclamp_used);
+>>>>>>> 3e1ae7fe1297 (ANDROID: sched/uclamp: Don't enable uclamp_is_used static key by in-kernel requests)
 
 	return 0;
 }
@@ -1482,7 +1494,7 @@ static void __init init_uclamp(void)
 static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p) { }
 static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p) { }
 static inline int uclamp_validate(struct task_struct *p,
-				  const struct sched_attr *attr)
+				  const struct sched_attr *attr, bool user)
 {
 	return -EOPNOTSUPP;
 }
@@ -5510,7 +5522,7 @@ recheck:
 
 	/* Update task specific "requested" clamps */
 	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP) {
-		retval = uclamp_validate(p, attr);
+		retval = uclamp_validate(p, attr, user);
 		if (retval)
 			return retval;
 	}
