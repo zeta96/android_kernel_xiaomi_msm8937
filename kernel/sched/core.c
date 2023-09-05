@@ -4009,7 +4009,9 @@ void scheduler_tick(void)
 	u64 wallclock;
 	bool early_notif;
 	u32 old_load;
+#ifdef CONFIG_SCHED_WALT
 	struct related_thread_group *grp;
+#endif
 	unsigned int flag = 0;
 
 	sched_clock_tick();
@@ -4040,6 +4042,7 @@ void scheduler_tick(void)
 	trigger_load_balance(rq);
 #endif
 
+#ifdef CONFIG_SCHED_WALT
 	rcu_read_lock();
 	grp = task_related_thread_group(curr);
 	if (update_preferred_cluster(grp, curr, old_load, true))
@@ -4056,6 +4059,7 @@ void scheduler_tick(void)
 	rq_unlock(rq, &rf);
 #endif
 
+#endif
 }
 
 #ifdef CONFIG_NO_HZ_FULL
