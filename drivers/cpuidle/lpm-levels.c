@@ -45,6 +45,7 @@
 #elif defined(CONFIG_COMMON_CLK_MSM)
 #include "../../drivers/clk/msm/clock.h"
 #endif /* CONFIG_COMMON_CLK */
+#include "../../kernel/sched/sched.h"
 #define CREATE_TRACE_POINTS
 #include <trace/events/trace_msm_low_power.h>
 
@@ -1299,7 +1300,7 @@ static int psci_enter_idle(struct cpuidle_device *dev, struct lpm_cpu *cpu,
 	 * idx = 0 is the default LPM state
 	 */
 
-	if (!idx) {
+	if (!idx || is_reserved(dev->cpu)) {
 		if (cpu->bias)
 			biastimer_start(cpu->bias);
 		stop_critical_timings();
