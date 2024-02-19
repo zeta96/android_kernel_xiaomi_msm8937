@@ -29,6 +29,9 @@ struct cass_cpu_cand {
 	int cpu;
 	unsigned int exit_lat;
 	unsigned long cap;
+#ifdef CONFIG_UCLAMP_TASK
+	unsigned long cap_max;
+#endif
 	unsigned long util;
 };
 
@@ -50,8 +53,10 @@ void cass_cpu_util(struct cass_cpu_cand *c, int this_cpu, bool sync)
 		}
 	}
 
+#ifndef CONFIG_UCLAMP_TASK
 	/* Get the capacity of this CPU adjusted for thermal pressure */
 	c->cap = arch_scale_cpu_capacity(c->cpu) - thermal_load_avg(rq);
+#endif
 
 	/*
 	 * Account for lost capacity due to time spent in RT/DL tasks and IRQs.
@@ -59,8 +64,13 @@ void cass_cpu_util(struct cass_cpu_cand *c, int this_cpu, bool sync)
 	 * order to produce consistently balanced task placement results between
 	 * CFS and RT tasks when CASS selects a CPU for them.
 	 */
+#ifdef CONFIG_UCLAMP_TASK
+	c->cap = c->cap_max - min(cpu_util_rt(rq) + cpu_util_dl(rq) +
+				  cpu_util_irq(rq), c->cap_max - 1);
+#else
 	c->cap -= min(cpu_util_rt(rq) + cpu_util_dl(rq) + cpu_util_irq(rq),
 		      c->cap - 1);
+#endif
 
 	/*
 	 * Deduct @current's util from this CPU if this is a sync wake, unless
@@ -83,6 +93,12 @@ bool cass_cpu_better(const struct cass_cpu_cand *a,
 	/* Prefer the CPU with lower relative utilization */
 	if (cass_cmp(b->util, a->util))
 		goto done;
+
+#ifdef CONFIG_UCLAMP_TASK
+	/* Prefer the CPU that is idle (only relevant for uclamped tasks) */
+	if (cass_cmp(!!a->exit_lat, !!b->exit_lat))
+		goto done;
+#endif
 
 	/* Prefer the current CPU for sync wakes */
 	if (sync && (cass_eq(a->cpu, this_cpu) || !cass_cmp(b->cpu, this_cpu)))
@@ -117,14 +133,27 @@ static int cass_best_cpu(struct task_struct *p, int prev_cpu, bool sync, bool rt
 	struct cass_cpu_cand cands[2], *best = cands;
 	int this_cpu = raw_smp_processor_id();
 	bool has_idle = false;
+#ifdef CONFIG_UCLAMP_TASK
+	unsigned long p_util, uc_min;
+#else
 	unsigned long p_util;
+#endif
 	int cidx = 0, cpu;
 
+#ifdef CONFIG_UCLAMP_TASK
+	/*
+	 * Get the utilization and uclamp minimum threshold for this task. Note
+	 * that RT tasks don't have per-entity load tracking.
+	 */
+	p_util = rt ? 0 : task_util_est(p);
+	uc_min = uclamp_eff_value(p, UCLAMP_MIN);
+#else
 	/*
 	 * Get the utilization for this task. Note that RT tasks don't have
 	 * per-entity load tracking.
 	 */
 	p_util = rt ? 0 : task_util_est(p);
+#endif
 
 	/*
 	 * Find the best CPU to wake @p on. Although idle_get_state() requires
@@ -143,22 +172,49 @@ static int cass_best_cpu(struct task_struct *p, int prev_cpu, bool sync, bool rt
 		struct cpuidle_state *idle_state;
 		struct rq *rq = cpu_rq(cpu);
 
+#ifdef CONFIG_UCLAMP_TASK
+		/* Get the capacity of this CPU adjusted for thermal pressure */
+		curr->cap_max = arch_scale_cpu_capacity(cpu) -
+				thermal_load_avg(rq);
+
+		/* Prefer the CPU that meets the uclamp minimum requirement */
+		if (curr->cap_max < uc_min && best->cap_max >= uc_min)
+			continue;
+#endif
+
 		/*
 		 * Check if this CPU is idle or only has SCHED_IDLE tasks. For
 		 * sync wakes, treat the current CPU as idle if @current is the
 		 * only running task.
 		 */
 		if ((sync && cpu == this_cpu && rq->nr_running == 1) || available_idle_cpu(cpu)) {
+#ifdef CONFIG_UCLAMP_TASK
+			/*
+			 * A non-idle candidate may be better when @p is uclamp
+			 * boosted. Otherwise, always prefer idle candidates.
+			 */
+			if (!uc_min) {
+				/* Discard any previous non-idle candidate */
+				if (!has_idle)
+					best = curr;
+				has_idle = true;
+			}
+#else
 			/* Discard any previous non-idle candidate */
 			if (!has_idle)
 				best = curr;
 			has_idle = true;
+#endif
 
 			/* Nonzero exit latency indicates this CPU is idle */
 			curr->exit_lat = 1;
 
 			/* Add on the actual idle exit latency, if any */
+#ifdef CONFIG_UCLAMP_TASK
+			idle_state = idle_get_state(rq);
+#else
 			idle_state = idle_get_state(cpu_rq(cpu));
+#endif
 			if (idle_state)
 				curr->exit_lat += idle_state->exit_latency;
 		} else {
@@ -181,6 +237,12 @@ static int cass_best_cpu(struct task_struct *p, int prev_cpu, bool sync, bool rt
 		 */
 		if (cpu != task_cpu(p))
 			curr->util += p_util;
+
+#ifdef CONFIG_UCLAMP_TASK
+		/* Clamp the utilization to the minimum performance threshold */
+		if (curr->util < uc_min)
+			curr->util = uc_min;
+#endif
 
 		/* Calculate the relative utilization for this CPU candidate */
 		curr->util = curr->util * SCHED_CAPACITY_SCALE / curr->cap;
