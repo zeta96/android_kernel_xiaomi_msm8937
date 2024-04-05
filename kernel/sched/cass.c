@@ -31,8 +31,6 @@ struct cass_cpu_cand {
 	unsigned long cap;
 #ifdef CONFIG_UCLAMP_TASK
 	unsigned long cap_max;
-	unsigned long cap_no_therm;
-	unsigned long cap_orig;
 	unsigned long eff_util;
 	unsigned long hard_util;
 #endif
@@ -69,11 +67,6 @@ void cass_cpu_util(struct cass_cpu_cand *c, int this_cpu, bool sync)
 	c->hard_util = cpu_util_rt(rq) + cpu_util_dl(rq) + cpu_util_irq(rq);
 #endif
 
-#ifndef CONFIG_UCLAMP_TASK
-	/* Get the capacity of this CPU adjusted for thermal pressure */
-	c->cap = arch_scale_cpu_capacity(c->cpu) - thermal_load_avg(rq);
-#endif
-
 	/*
 	 * Account for lost capacity due to time spent in RT/DL tasks and IRQs.
 	 * Capacity is considered lost to RT tasks even when @p is an RT task in
@@ -87,10 +80,7 @@ void cass_cpu_util(struct cass_cpu_cand *c, int this_cpu, bool sync)
 		      c->cap - 1);
 #endif
 
-#ifdef CONFIG_UCLAMP_TASK
-	/* Get the current capacity with thermal pressure excluded */
-	c->cap_no_therm = c->cap_orig - min(c->hard_util, c->cap_orig - 1);
-#else
+#ifndef CONFIG_UCLAMP_TASK
 	/*
 	 * Deduct @current's util from this CPU if this is a sync wake, unless
 	 * @current is an RT task; RT tasks don't have per-entity load tracking.
@@ -206,10 +196,7 @@ static int cass_best_cpu(struct task_struct *p, int prev_cpu, bool sync, bool rt
 
 #ifdef CONFIG_UCLAMP_TASK
 		/* Get the original, maximum _possible_ capacity of this CPU */
-		curr->cap_orig = arch_scale_cpu_capacity(cpu);
-
-		/* Get the _current_, throttled maximum capacity of this CPU */
-		curr->cap_max = curr->cap_orig - thermal_load_avg(rq);
+		curr->cap_max = arch_scale_cpu_capacity(cpu);
 
 		/* Prefer the CPU that more closely meets the uclamp minimum */
 		if (curr->cap_max < uc_min && curr->cap_max < best->cap_max)
@@ -302,7 +289,7 @@ static int cass_best_cpu(struct task_struct *p, int prev_cpu, bool sync, bool rt
 		 * disproportionate P-states.
 		 */
 		curr->util =
-			curr->util * SCHED_CAPACITY_SCALE / curr->cap_no_therm;
+			curr->util * SCHED_CAPACITY_SCALE / curr->cap;
 #else
 		/* Calculate the relative utilization for this CPU candidate */
 		curr->util = curr->util * SCHED_CAPACITY_SCALE / curr->cap;
