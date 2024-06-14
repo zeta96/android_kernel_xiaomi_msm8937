@@ -111,9 +111,10 @@ int xiaomi_santoni_gf_parse_dts(struct gf_dev *gf_dev)
 	if (rc)
 		goto exit;
 	rc = select_pin_ctl(gf_dev, "goodixfp_irq_active");
-	if (rc)
+	if (rc) {
 		goto exit;
 		pr_warn("--------xiaomi_santoni_gf_parse_dts end---OK.--------\n");
+	}
 
 	exit:
 	return rc;
