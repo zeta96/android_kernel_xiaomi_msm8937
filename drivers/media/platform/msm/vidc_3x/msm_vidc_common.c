@@ -5057,9 +5057,10 @@ static int msm_vidc_check_mbpf_supported(struct msm_vidc_inst *inst)
 			temp->state >= MSM_VIDC_STOP_DONE)
 			continue;
 		/* ignore thumbnail session */
-		if (is_thumbnail_session(temp))
+		if (is_thumbnail_session(temp)) {
 			continue;
 			mbpf += msm_comm_get_mbs_per_frame(inst);
+		}
 	}
 	mutex_unlock(&core->lock);
 	if (mbpf > 2*capability->mbs_per_frame.max) {
