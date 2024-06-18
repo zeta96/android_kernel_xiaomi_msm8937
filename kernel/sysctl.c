@@ -1656,7 +1656,7 @@ static struct ctl_table vm_table[] = {
 		.procname	= "overcommit_memory",
 		.data		= &sysctl_overcommit_memory,
 		.maxlen		= sizeof(sysctl_overcommit_memory),
-		.mode		= 0644,
+		.mode		= 0444,
 		.proc_handler	= proc_dointvec_minmax,
 		.extra1		= &zero,
 		.extra2		= &two,
@@ -1695,7 +1695,7 @@ static struct ctl_table vm_table[] = {
 		.procname	= "overcommit_ratio",
 		.data		= &sysctl_overcommit_ratio,
 		.maxlen		= sizeof(sysctl_overcommit_ratio),
-		.mode		= 0644,
+		.mode		= 0444,
 		.proc_handler	= overcommit_ratio_handler,
 	},
 	{
