@@ -1844,7 +1844,7 @@ static ssize_t disksize_store(struct device *dev,
 		return -EINVAL;
 
 #ifdef CONFIG_ZRAM_SIZE_OVERRIDE
-	if (disksize < (u64)SZ_1G) {
+	if (disksize < (u64)SZ_2G) {
 		disksize = (u64)SZ_1G * CONFIG_ZRAM_SIZE_OVERRIDE;
 		pr_info("Overriding zram size to %llu", disksize);
 	}
