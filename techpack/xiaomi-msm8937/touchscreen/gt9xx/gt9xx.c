@@ -835,7 +835,7 @@ static s8 gtp_enter_sleep(struct goodix_ts_data *ts)
 	while (retry++ < 5) {
 		ret = gtp_i2c_write(ts->client, i2c_control_buf, 3);
 		if (ret > 0) {
-			dev_info(&ts->client->dev, "Enter sleep mode\n");
+			dev_dbg(&ts->client->dev, "Enter sleep mode\n");
 
 			return ret;
 		}
@@ -2153,7 +2153,7 @@ static void gtp_resume(struct goodix_ts_data *ts)
 		return;
 	}
 
-	dev_info(&ts->client->dev, "Try resume from sleep mode\n");
+	dev_dbg(&ts->client->dev, "Try resume from sleep mode\n");
 
 	gtp_work_control_enable(ts, false);
 
@@ -2193,7 +2193,7 @@ static void fb_notify_resume_work(struct work_struct *work)
 {
 	struct goodix_ts_data *ts =
 		container_of(work, struct goodix_ts_data, fb_notify_work);
-	dev_info(&ts->client->dev, "try resume in workqueue\n");
+	dev_dbg(&ts->client->dev, "try resume in workqueue\n");
 	gtp_resume(ts);
 }
 
@@ -2432,7 +2432,7 @@ void gtp_esd_on(struct goodix_ts_data *ts)
 	if (ts_esd->esd_on == false) {
 		ts_esd->esd_on = true;
 		schedule_delayed_work(&ts_esd->delayed_work, 2 * HZ);
-		dev_info(&ts->client->dev, "ESD on");
+		dev_dbg(&ts->client->dev, "ESD on");
 	}
 	mutex_unlock(&ts_esd->mutex);
 }
@@ -2447,7 +2447,7 @@ void gtp_esd_off(struct goodix_ts_data *ts)
 	if (ts_esd->esd_on == true) {
 		ts_esd->esd_on = false;
 		cancel_delayed_work_sync(&ts_esd->delayed_work);
-		dev_info(&ts->client->dev, "ESD off");
+		dev_dbg(&ts->client->dev, "ESD off");
 	}
 	mutex_unlock(&ts_esd->mutex);
 }
