@@ -99,7 +99,11 @@ int mxt_unregister_glove_mode_notifier(struct notifier_block *nb);
 			printk("Atmel-308U:[%d]"fmt"\n", __LINE__, ##arg);\
 		} while (0)
 
-#define CTP_INFO(fmt, arg...)           printk("ATMEL-TP-TAG-INFO:"fmt"\n", ##arg)
+#define CTP_INFO(fmt, arg...)	do {\
+		if (CTP_DEBUG_ON)\
+			printk("ATMEL-TP-TAG-INFO:"fmt"\n", ##arg);\
+		} while (0)
+
 #define CTP_ERROR(fmt, arg...)          printk("ATMEL-TP-TAG ERROR:"fmt"\n", ##arg)
 #endif /* __LINUX_ATMEL_MXT_TS_H */
 
