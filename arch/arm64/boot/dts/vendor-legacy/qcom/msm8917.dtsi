@@ -154,7 +154,9 @@
 #include "msm8917-cpu.dtsi"
 #include "msm8917-pm.dtsi"
 #include "msm8917-ion.dtsi"
+#ifdef CONFIG_CORESIGHT
 #include "msm8917-coresight.dtsi"
+#endif
 #include "msm8917-bus.dtsi"
 #include "msm8917-mdss.dtsi"
 #include "msm8917-mdss-pll.dtsi"
@@ -1072,6 +1074,9 @@
 		clocks = <&rpmcc RPM_SMD_QDSS_CLK>,
 			 <&rpmcc RPM_SMD_QDSS_A_CLK>;
 		clock-names = "core_clk", "core_a_clk";
+#ifdef CONFIG_CORESIGHT
+		status = "disabled";
+#endif
 	};
 
 	jtag_mm1: jtagmm@61bd000 {
@@ -1085,6 +1090,9 @@
 		clocks = <&rpmcc RPM_SMD_QDSS_CLK>,
 			<&rpmcc RPM_SMD_QDSS_A_CLK>;
 		clock-names = "core_clk", "core_a_clk";
+#ifdef CONFIG_CORESIGHT
+                status = "disabled";
+#endif
 	};
 
 	jtag_mm2: jtagmm@61be000 {
@@ -1098,6 +1106,9 @@
 		clocks = <&rpmcc RPM_SMD_QDSS_CLK>,
 			<&rpmcc RPM_SMD_QDSS_A_CLK>;
 		clock-names = "core_clk", "core_a_clk";
+#ifdef CONFIG_CORESIGHT
+                status = "disabled";
+#endif
 	};
 
 	jtag_mm3: jtagmm@61bf000 {
@@ -1111,6 +1122,9 @@
 		clocks = <&rpmcc RPM_SMD_QDSS_CLK>,
 			 <&rpmcc RPM_SMD_QDSS_A_CLK>;
 		clock-names = "core_clk", "core_a_clk";
+#ifdef CONFIG_CORESIGHT
+                status = "disabled";
+#endif
 	};
 
 	qcom,ipc-spinlock@1905000 {
