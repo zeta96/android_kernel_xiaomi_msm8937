@@ -111,6 +111,7 @@
 		qcom,max-vote = <4000>;
 	};
 
+#ifdef CONFIG_CORESIGHT
 	/delete-node/ funnel@6120000;
 	funnel_right: funnel@6120000 {
 		compatible = "arm,primecell";
@@ -204,6 +205,7 @@
 			};
 		};
 	};
+#endif
 
 };
 
