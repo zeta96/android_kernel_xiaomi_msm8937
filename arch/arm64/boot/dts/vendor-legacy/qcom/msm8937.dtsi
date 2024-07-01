@@ -118,6 +118,7 @@
 			reg = <0x0 0x90000000 0x0 0x1400000>;
 		};
 
+#ifdef CONFIG_QCOM_MEMORY_DUMP_V2
 		dump_mem: mem_dump_region {
 			compatible = "shared-dma-pool";
 			reusable;
@@ -125,6 +126,7 @@
 			alignment = <0x0 0x400000>;
 			size = <0 0x19d000>;
 		};
+#endif
 	};
 
 	aliases {
@@ -315,6 +317,7 @@
 
 	thermal_zones: thermal-zones {};
 
+#ifdef CONFIG_QCOM_MEMORY_DUMP_V2
 	mem_dump {
 		compatible = "qcom,mem-dump";
 		memory-region = <&dump_mem>;
@@ -520,6 +523,7 @@
 		};
 
 	};
+#endif
 
 	tsens0: tsens@4a8000 {
 		compatible = "qcom,msm8937-tsens";
