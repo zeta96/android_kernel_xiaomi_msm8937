@@ -89,11 +89,11 @@ static unsigned long find_victims(int *vindex)
 		 * while this code runs, it doesn't really matter; we just need
 		 * a snapshot of the task's adj.
 		 *
-		 * Skip SERVICE_ADJ below, which makes HOME_ADJ less importent
+		 * Skip BACKUP_APP_ADJ below, which makes above BACKUP_APP_ADJ less importent
 		 */
 		sig = tsk->signal;
 		adj = READ_ONCE(sig->oom_score_adj);
-		if (adj < 600 ||
+		if (adj < 300 ||
 		    sig->flags & (SIGNAL_GROUP_EXIT | SIGNAL_GROUP_COREDUMP) ||
 		    (thread_group_empty(tsk) && tsk->flags & PF_EXITING))
 			continue;
