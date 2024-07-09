@@ -554,7 +554,7 @@ static int hw_break_set(struct task_struct *target,
 	unsigned int note_type = regset->core_note_type;
 	int ret, idx = 0, offset, limit;
 	u32 ctrl;
-	u64 addr;
+	u64 addr = 0;
 
 	/* Resource info and pad */
 	offset = offsetof(struct user_hwdebug_state, dbg_regs);

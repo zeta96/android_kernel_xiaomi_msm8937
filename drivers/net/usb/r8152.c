@@ -950,7 +950,7 @@ int usb_ocp_write(struct r8152 *tp, u16 index, u16 byteen, u16 size, void *data)
 
 static u32 ocp_read_dword(struct r8152 *tp, u16 type, u16 index)
 {
-	__le32 data;
+	__le32 data = 0;
 
 	generic_ocp_read(tp, index, sizeof(data), &data, type);
 
@@ -967,7 +967,7 @@ static void ocp_write_dword(struct r8152 *tp, u16 type, u16 index, u32 data)
 static u16 ocp_read_word(struct r8152 *tp, u16 type, u16 index)
 {
 	u32 data;
-	__le32 tmp;
+	__le32 tmp = 0;
 	u16 byen = BYTE_EN_WORD;
 	u8 shift = index & 2;
 
@@ -1007,7 +1007,7 @@ static void ocp_write_word(struct r8152 *tp, u16 type, u16 index, u32 data)
 static u8 ocp_read_byte(struct r8152 *tp, u16 type, u16 index)
 {
 	u32 data;
-	__le32 tmp;
+	__le32 tmp = 0;
 	u8 shift = index & 3;
 
 	index &= ~3;
