@@ -3657,7 +3657,7 @@ int smblib_get_prop_usb_voltage_now(struct smb_charger *chg,
 {
 	union power_supply_propval pval = {0, };
 	int rc, ret = 0;
-	u8 reg, adc_ch_reg;
+	u8 reg, adc_ch_reg = 0;
 
 	mutex_lock(&chg->adc_lock);
 
