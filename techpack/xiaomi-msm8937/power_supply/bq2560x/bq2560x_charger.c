@@ -841,7 +841,7 @@ report:
 
 static int bq2560x_get_prop_health(struct bq2560x *bq)
 {
-	int ret;
+	int ret = 0;
 	union power_supply_propval batt_prop = {0,};
 
 	if (bq->software_jeita_supported) {

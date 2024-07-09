@@ -743,7 +743,7 @@ static int dapm_connect_mux(struct snd_soc_dapm_context *dapm,
 {
 	const struct snd_kcontrol_new *kcontrol = &w->kcontrol_news[0];
 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-	unsigned int val, item;
+	unsigned int val = 0, item;
 	int i;
 
 	if (e->reg != SND_SOC_NOPM) {
@@ -3983,7 +3983,7 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
 	struct snd_soc_dapm_widget template;
 	struct snd_soc_dapm_widget *w;
 	const char **w_param_text;
-	unsigned long private_value;
+	unsigned long private_value = 0;
 	char *link_name;
 	int ret;
 

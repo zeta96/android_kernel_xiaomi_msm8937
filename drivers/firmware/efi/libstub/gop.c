@@ -188,12 +188,12 @@ setup_gop64(efi_system_table_t *sys_table_arg, struct screen_info *si,
 {
 	struct efi_graphics_output_protocol_64 *gop64, *first_gop;
 	unsigned long nr_gops;
-	u16 width, height;
-	u32 pixels_per_scan_line;
+	u16 width = 0, height = 0;
+	u32 pixels_per_scan_line = 0;
 	u32 ext_lfb_base;
-	u64 fb_base;
-	struct efi_pixel_bitmask pixel_info;
-	int pixel_format;
+	u64 fb_base = 0;
+	struct efi_pixel_bitmask pixel_info = { 0 };
+	int pixel_format = 0;
 	efi_status_t status;
 	u64 *handles = (u64 *)(unsigned long)gop_handle;
 	int i;
