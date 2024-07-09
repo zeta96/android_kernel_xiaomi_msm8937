@@ -1936,10 +1936,10 @@ static int msm_isp_cfg_ping_pong_address(struct vfe_device *vfe_dev,
 	uint32_t stream_idx = HANDLE_TO_IDX(stream_info->stream_handle);
 	uint32_t buffer_size_byte = 0;
 	int32_t word_per_line = 0;
-	dma_addr_t paddr;
+	dma_addr_t paddr = 0;
 	struct dual_vfe_resource *dual_vfe_res = NULL;
 	uint32_t vfe_id = 0;
-	unsigned long flags;
+	unsigned long flags = 0;
 
 	if (stream_idx >= VFE_AXI_SRC_MAX) {
 		pr_err("%s: Invalid stream_idx", __func__);
@@ -3267,7 +3267,7 @@ int legacy_msm_isp_cfg_axi_stream(struct vfe_device *vfe_dev, void *arg)
 	int rc = 0, ret;
 	struct msm_vfe_axi_stream_cfg_cmd *stream_cfg_cmd = arg;
 	struct msm_vfe_axi_shared_data *axi_data = &vfe_dev->axi_data;
-	enum msm_isp_camif_update_state camif_update;
+	enum msm_isp_camif_update_state camif_update = 0;
 	int halt = 0;
 
 	rc = legacy_msm_isp_axi_check_stream_state(vfe_dev, stream_cfg_cmd);

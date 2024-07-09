@@ -858,7 +858,7 @@ static int fg_dm_read_block(struct bq_fg_chip *bq, u8 classid,
 							u8 offset, u8 *buf)
 {
 	int ret;
-	u8 cksum_calc, cksum;
+	u8 cksum_calc, cksum = 0;
 	u8 blk_offset = offset >> 5;
 
 	pr_info("subclass:%d, offset:%d\n", classid, offset);
@@ -2032,7 +2032,7 @@ static int bq_fg_probe(struct i2c_client *client,
 				const struct i2c_device_id *id)
 {
 
-	int ret;
+	int ret = 0;
 	struct bq_fg_chip *bq;
 	u8 *regs;
 

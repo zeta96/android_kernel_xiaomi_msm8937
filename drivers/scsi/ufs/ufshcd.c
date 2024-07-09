@@ -7475,7 +7475,7 @@ static void ufshcd_rls_handler(struct work_struct *work)
 {
 	struct ufs_hba *hba;
 	int ret = 0;
-	u32 mode;
+	u32 mode = 0;
 
 	hba = container_of(work, struct ufs_hba, rls_work);
 

@@ -205,7 +205,7 @@ static void aw2013_brightness_work(struct work_struct *work)
 {
 	struct aw2013_led *led = container_of(work, struct aw2013_led,
 					brightness_work);
-	u8 val;
+	u8 val = 0;
 
 	mutex_lock(&led->pdata->led->lock);
 
@@ -253,7 +253,7 @@ static void aw2013_brightness_work(struct work_struct *work)
 
 static void aw2013_led_blink_set(struct aw2013_led *led, unsigned long blinking)
 {
-	u8 val;
+	u8 val = 0;
 
 	/* enable regulators if they are disabled */
 	if (!led->pdata->led->poweron) {
