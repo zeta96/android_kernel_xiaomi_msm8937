@@ -172,8 +172,7 @@ struct qcom_smp2p {
 
 static void *ilc;
 #define SMP2P_LOG_PAGE_CNT 2
-#define SMP2P_INFO(x, ...)	\
-	ipc_log_string(ilc, "[%s]: "x, __func__, ##__VA_ARGS__)
+#define SMP2P_INFO(x...) ((void)0)
 
 static void qcom_smp2p_kick(struct qcom_smp2p *smp2p)
 {
