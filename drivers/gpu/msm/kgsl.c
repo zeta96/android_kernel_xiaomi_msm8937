@@ -796,7 +796,7 @@ static struct kgsl_device *kgsl_get_minor(int minor)
 int kgsl_check_timestamp(struct kgsl_device *device,
 	struct kgsl_context *context, unsigned int timestamp)
 {
-	unsigned int ts_processed;
+	unsigned int ts_processed = 0;
 
 	kgsl_readtimestamp(device, context, KGSL_TIMESTAMP_RETIRED,
 		&ts_processed);
