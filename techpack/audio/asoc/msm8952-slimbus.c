@@ -2454,7 +2454,7 @@ int msm_slim_5_tx_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
 	int rc;
 	void *config;
 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-	struct snd_soc_component *component;
+	struct snd_soc_component *component = NULL;
 	struct snd_interval *rate =
 		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
 	struct snd_interval *channels =
