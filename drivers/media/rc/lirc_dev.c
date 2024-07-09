@@ -254,6 +254,8 @@ static ssize_t ir_lirc_transmit_ir(struct file *file, const char __user *buf,
 	unsigned int duration = 0; /* signal duration in us */
 	int i;
 
+	start = ktime_get();
+	
 	ret = mutex_lock_interruptible(&dev->lock);
 	if (ret)
 		return ret;
