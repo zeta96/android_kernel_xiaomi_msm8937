@@ -173,9 +173,7 @@ enum fastrpc_remote_subsys_state {
 				: (int64_t *)NULL) : (int64_t *)NULL)
 
 #define FASTRPC_GLINK_LOG_PAGES 8
-#define LOG_FASTRPC_GLINK_MSG(ctx, x, ...)	\
-	ipc_log_string(ctx, "%s (%d, %d): "x,	\
-		current->comm, current->tgid, current->pid, ##__VA_ARGS__)
+#define LOG_FASTRPC_GLINK_MSG(ctx, x, ...) ((void)0)
 
 static int fastrpc_pdr_notifier_cb(struct notifier_block *nb,
 					unsigned long code,
