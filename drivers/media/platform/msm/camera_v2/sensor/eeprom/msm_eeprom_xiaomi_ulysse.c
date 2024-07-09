@@ -53,7 +53,7 @@ static struct vendor_eeprom s_vendor_eeprom[CAMERA_VENDOR_EEPROM_COUNT_MAX];
 static camera_vendor_module_id
 s5k5e8_oef0501_ofilm_get_otp_vendor_module_id(struct msm_eeprom_ctrl_t *e_ctrl)
 {
-	uint32_t MODULE_INFO_OFFSET;
+	uint32_t MODULE_INFO_OFFSET = 0;
 	uint8_t mid = 0;
 	uint8_t tempflag;
 	uint8_t *buffer = e_ctrl->cal_data.mapdata;
@@ -99,7 +99,7 @@ s5k5e8_oef0501_ofilm_get_otp_vendor_module_id(struct msm_eeprom_ctrl_t *e_ctrl)
 static camera_vendor_module_id
 s5k5e8_f5e8ybf_qtech_get_otp_vendor_module_id(struct msm_eeprom_ctrl_t *e_ctrl)
 {
-	uint32_t MODULE_INFO_OFFSET;
+	uint32_t MODULE_INFO_OFFSET = 0;
 	uint8_t mid = 0;
 
 	uint8_t *buffer = e_ctrl->cal_data.mapdata;
