@@ -1603,7 +1603,7 @@ static int bound_soc(int soc)
 static int smb358_set_appropriate_current(struct smb358_charger *chip,
 						enum path_type path)
 {
-	int therm_ma;
+	int therm_ma = 0;
 
 
 	int rc = 0;
@@ -3172,8 +3172,8 @@ bool disable_charging = false;
 void get_capacity_disable_charging(struct smb358_charger *chip)
 {
 	char *boardid_string = NULL;
-	int India_0;
-	int India_1;
+	int India_0 = 0;
+	int India_1 = 0;
 
 	boardid_string = xiaomi_msm8937_mach_get_wingtech_board_id();
 

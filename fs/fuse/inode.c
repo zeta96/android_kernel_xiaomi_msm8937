@@ -1624,7 +1624,7 @@ EXPORT_SYMBOL_GPL(fuse_fill_super_common);
 static int fuse_fill_super(struct super_block *sb, struct fs_context *fsc)
 {
 	struct fuse_fs_context *ctx = fsc->fs_private;
-	struct file *file;
+	struct file *file = NULL;
 	int err;
 	struct fuse_conn *fc;
 	struct fuse_mount *fm;

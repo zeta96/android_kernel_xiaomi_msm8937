@@ -1839,7 +1839,7 @@ EXPORT_SYMBOL(wcnss_register_driver);
 
 int wcnss_unregister_driver(struct wcnss_driver_ops *ops)
 {
-	int ret;
+	int ret = 0;
 
 	if (!penv || !penv->pdev) {
 		ret = -ENODEV;
