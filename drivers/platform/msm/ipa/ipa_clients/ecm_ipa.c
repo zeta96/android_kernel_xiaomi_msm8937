@@ -28,12 +28,7 @@
 
 #define IPA_ECM_IPC_LOG_PAGES 50
 
-#define IPA_ECM_IPC_LOGGING(buf, fmt, args...) \
-	do { \
-		if (buf) \
-			ipc_log_string((buf), fmt, __func__, __LINE__, \
-				## args); \
-	} while (0)
+#define IPA_ECM_IPC_LOGGING(buf, fmt, args...) ((void)0)
 
 static void *ipa_ecm_logbuf;
 
@@ -41,9 +36,6 @@ static void *ipa_ecm_logbuf;
 	do { \
 		pr_debug(DRIVER_NAME " %s:%d "\
 			fmt, __func__, __LINE__, ## args);\
-		if (ipa_ecm_logbuf) { \
-			IPA_ECM_IPC_LOGGING(ipa_ecm_logbuf, \
-				DRIVER_NAME " %s:%d " fmt, ## args); \
 		} \
 	} while (0)
 
@@ -54,9 +46,6 @@ static void *ipa_ecm_logbuf;
 	do { \
 		pr_info(DRIVER_NAME "@%s@%d@ctx:%s: "\
 			fmt, __func__, __LINE__, current->comm, ## args);\
-		if (ipa_ecm_logbuf) { \
-			IPA_ECM_IPC_LOGGING(ipa_ecm_logbuf, \
-				DRIVER_NAME " %s:%d " fmt, ## args); \
 		} \
 	} while (0)
 
@@ -64,9 +53,6 @@ static void *ipa_ecm_logbuf;
 	do { \
 		pr_err(DRIVER_NAME "@%s@%d@ctx:%s: "\
 			fmt, __func__, __LINE__, current->comm, ## args);\
-		if (ipa_ecm_logbuf) { \
-			IPA_ECM_IPC_LOGGING(ipa_ecm_logbuf, \
-				DRIVER_NAME " %s:%d " fmt, ## args); \
 		} \
 	} while (0)
 
