@@ -107,6 +107,8 @@ if (print) { \
 		pr_err(x); \
 } \
 } while (0)
+#else
+#define smd_ipc(log_ctx, print, dev, x...) ((void)0)
 #endif
 
 /**
