@@ -53,13 +53,7 @@
 #define MAX_LEN 96
 #define NUM_OF_ENCRYPTED_KEY	3
 
-#define pil_log(msg, desc)	\
-	do {			\
-		if (pil_ipc_log)		\
-			pil_ipc("[%s]: %s", desc->name, msg); \
-		else		\
-			trace_pil_event(msg, desc);	\
-	} while (0)
+#define pil_log(msg, desc) ((void)0)
 
 
 static void __iomem *pil_info_base;
