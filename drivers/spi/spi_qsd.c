@@ -50,7 +50,6 @@
 #define SPI_MAX_BYTES_PER_WORD			(4)
 
 #define spi_ipc(log_ctx, print, dev, x...) do { \
-ipc_log_string(log_ctx, x); \
 if (print) { \
 	if (dev) \
 		dev_err((dev), x); \
