@@ -16,12 +16,7 @@ struct pil_priv;
 
 extern void *pil_ipc_log;
 
-#define pil_ipc(__msg, ...) \
-do { \
-	if (pil_ipc_log) \
-		ipc_log_string(pil_ipc_log, \
-			"[%s]: "__msg, __func__,  ##__VA_ARGS__); \
-} while (0)
+#define pil_ipc(__msg, ...) ((void)0)
 /**
  * struct pil_desc - PIL descriptor
  * @name: string used for pil_get()
