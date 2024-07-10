@@ -146,10 +146,7 @@
  */
 #define POLL_ITERATIONS		1000
 
-#define IPC_LOG_MSG(ctx, x...) do { \
-	if (ctx) \
-		ipc_log_string(ctx, x); \
-} while (0)
+#define IPC_LOG_MSG(ctx, x...) ((void)0)
 
 #define DMA_RX_BUF_SIZE		(2048)
 #define UART_CONSOLE_RX_WM	(2)
