@@ -276,7 +276,9 @@ struct cpr_regulator {
 	bool				vreg_enabled;
 	int				corner;
 	int				ceiling_max;
+#ifdef CONFIG_DEBUG_FS
 	struct dentry			*debugfs;
+#endif
 
 	/* eFuse parameters */
 	phys_addr_t	efuse_addr;
@@ -5738,14 +5740,18 @@ int __init cpr_regulator_init(void)
 		return 0;
 
 	initialized = true;
+#ifdef CONFIG_DEBUG_FS
 	cpr_debugfs_base_init();
+#endif
 	return platform_driver_register(&cpr_regulator_driver);
 }
 
 static void __exit cpr_regulator_exit(void)
 {
 	platform_driver_unregister(&cpr_regulator_driver);
+#ifdef CONFIG_DEBUG_FS
 	cpr_debugfs_base_remove();
+#endif
 }
 
 MODULE_DESCRIPTION("CPR regulator driver");
