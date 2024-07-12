@@ -87,11 +87,7 @@ static const struct file_operations apr_debug_ops = {
 };
 #endif
 
-#define APR_PKT_INFO(x...) \
-do { \
-	if (apr_pkt_ctx) \
-		ipc_log_string(apr_pkt_ctx, "<APR>: "x); \
-} while (0)
+#define APR_PKT_INFO(x...) ((void)0)
 
 /* hab handle */
 static uint32_t hab_handle_tx;
