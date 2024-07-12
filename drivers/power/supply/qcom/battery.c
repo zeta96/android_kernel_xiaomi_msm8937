@@ -122,9 +122,7 @@ enum {
 	FORCE_INOV_DISABLE_BIT	= BIT(1),
 };
 
-#ifdef CONFIG_DEBUG_FS
 static int debug_mask;
-#endif
 
 #define pl_dbg(chip, reason, fmt, ...)				\
 	do {								\
