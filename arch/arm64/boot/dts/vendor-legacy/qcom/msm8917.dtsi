@@ -23,6 +23,7 @@
 
 	chosen {
 		bootargs = "sched_enable_hmp=1 kpti=0 rcu_nocbs=0-3 noirqdebug quiet nodebugmon norandmaps";
+		rng-seed = <0x12345678>;
 	};
 
 	aliases {
