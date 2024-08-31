@@ -93,13 +93,14 @@ void cass_cpu_util(struct cass_cpu_cand *c, int this_cpu, bool sync)
 /* Returns true if @a is a better CPU than @b */
 static __always_inline
 bool cass_cpu_better(const struct cass_cpu_cand *a,
-		     const struct cass_cpu_cand *b,
+		     const struct cass_cpu_cand *b, unsigned long p_util,
 		     int this_cpu, int prev_cpu, bool sync)
 {
 #define cass_cmp(a, b) ({ res = (a) - (b); })
 #define cass_eq(a, b) ({ res = (a) == (b); })
 	long res;
 
+<<<<<<< HEAD
 #ifdef CONFIG_UCLAMP_TASK
 	/* Prefer the CPU that's not overloaded */
 	if (cass_cmp(b->eff_util / b->cap_max, a->eff_util / a->cap_max))
@@ -112,6 +113,13 @@ bool cass_cpu_better(const struct cass_cpu_cand *a,
 		goto done;
 #endif
 	
+=======
+	/* Prefer the CPU that fits the task */
+	if (cass_cmp(fits_capacity(p_util, a->cap),
+		     fits_capacity(p_util, b->cap)))
+		goto done;
+
+>>>>>>> b3192709606c (sched/cass: Don't fight the idle load balancer)
 	/* Prefer the CPU with lower relative utilization */
 	if (cass_cmp(b->util, a->util))
 		goto done;
@@ -262,6 +270,7 @@ static int cass_best_cpu(struct task_struct *p, int prev_cpu, bool sync, bool rt
 		if (cpu != task_cpu(p))
 			curr->util += p_util;
 
+<<<<<<< HEAD
 #ifdef CONFIG_UCLAMP_TASK
 		/*
 		 * Calculate the effective utilization for this CPU candidate;
@@ -271,6 +280,10 @@ static int cass_best_cpu(struct task_struct *p, int prev_cpu, bool sync, bool rt
 		 * disregards thermal pressure.
 		 */
 		curr->eff_util = max(curr->util + curr->hard_util, uc_min);
+=======
+		/* Get the original, maximum _possible_ capacity of this CPU */
+		curr->cap = arch_scale_cpu_capacity(NULL, cpu);
+>>>>>>> b3192709606c (sched/cass: Don't fight the idle load balancer)
 
 		/* Clamp the utilization to the minimum performance threshold */
 		if (curr->util < uc_min)
@@ -304,7 +317,8 @@ static int cass_best_cpu(struct task_struct *p, int prev_cpu, bool sync, bool rt
 		 * cidx still needs to be changed to the other candidate slot.
 		 */
 		if (best == curr ||
-		    cass_cpu_better(curr, best, this_cpu, prev_cpu, sync)) {
+		    cass_cpu_better(curr, best, p_util, this_cpu, prev_cpu,
+				    sync)) {
 			best = curr;
 			cidx ^= 1;
 		}
