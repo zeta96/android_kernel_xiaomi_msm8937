@@ -29,9 +29,9 @@ DEFINE_MSM_MUTEX(msm_actuator_mutex);
 #define CDBG(fmt, args...) pr_debug(fmt, ##args)
 #endif
 
-#define PARK_LENS_LONG_STEP 7
-#define PARK_LENS_MID_STEP 5
-#define PARK_LENS_SMALL_STEP 3
+#define PARK_LENS_LONG_STEP 3
+#define PARK_LENS_MID_STEP 2
+#define PARK_LENS_SMALL_STEP 1
 #define MAX_QVALUE 4096
 
 static struct v4l2_file_operations msm_actuator_v4l2_subdev_fops;
@@ -870,9 +870,9 @@ static int32_t msm_actuator_park_lens(struct msm_actuator_ctrl_t *a_ctrl)
 				PARK_LENS_SMALL_STEP);
 		} else {
 			next_lens_pos = (next_lens_pos >
-				a_ctrl->park_lens.max_step) ?
+				a_ctrl->park_lens.max_step/4) ?
 				(next_lens_pos - a_ctrl->park_lens.
-				max_step) : 0;
+				max_step/4) : 0;
 		}
 #if IS_ENABLED(CONFIG_MACH_XIAOMI_TIARE)
 		if (xiaomi_msm8937_mach_get() == XIAOMI_MSM8937_MACH_TIARE) {
