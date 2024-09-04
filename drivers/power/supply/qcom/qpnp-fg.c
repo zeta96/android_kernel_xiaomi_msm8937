@@ -3212,7 +3212,7 @@ static int estimate_battery_age(struct fg_chip *chip, int *actual_capacity)
 
 	if (chip->nom_cap_uah == 0) {
 		if (fg_debug_mask & FG_AGING)
-			pr_info("ocv coefficients not loaded, aborting\n");
+			pr_info_ratelimited("ocv coefficients not loaded, aborting\n");
 		return 0;
 	}
 	fg_mem_lock(chip);
@@ -3220,7 +3220,7 @@ static int estimate_battery_age(struct fg_chip *chip, int *actual_capacity)
 	batt_temp = get_sram_prop_now(chip, FG_DATA_BATT_TEMP);
 	if (batt_temp < 150 || batt_temp > 400) {
 		if (fg_debug_mask & FG_AGING)
-			pr_info("Battery temp (%d) out of range, aborting\n",
+			pr_info_ratelimited("Battery temp (%d) out of range, aborting\n",
 					(int)batt_temp);
 		rc = 0;
 		goto done;
@@ -3229,7 +3229,7 @@ static int estimate_battery_age(struct fg_chip *chip, int *actual_capacity)
 	battery_soc = get_battery_soc_raw(chip) * 100 / FULL_PERCENT_3B;
 	if (battery_soc < 25 || battery_soc > 75) {
 		if (fg_debug_mask & FG_AGING)
-			pr_info("Battery SoC (%d) out of range, aborting\n",
+			pr_info_ratelimited("Battery SoC (%d) out of range, aborting\n",
 					(int)battery_soc);
 		rc = 0;
 		goto done;
@@ -3244,7 +3244,7 @@ static int estimate_battery_age(struct fg_chip *chip, int *actual_capacity)
 		goto error_done;
 	} else if (esr_actual < battery_esr) {
 		if (fg_debug_mask & FG_AGING)
-			pr_info("Batt ESR lower than ESR actual, aborting\n");
+			pr_info_ratelimited("Batt ESR lower than ESR actual, aborting\n");
 		rc = 0;
 		goto done;
 	}
@@ -3257,10 +3257,10 @@ static int estimate_battery_age(struct fg_chip *chip, int *actual_capacity)
 	fg_mem_release(chip);
 
 	if (fg_debug_mask & FG_AGING) {
-		pr_info("batt_soc = %d, cutoff_voltage = %lld, eval current = %d\n",
+		pr_info_ratelimited("batt_soc = %d, cutoff_voltage = %lld, eval current = %d\n",
 				battery_soc, chip->cutoff_voltage,
 				chip->evaluation_current);
-		pr_info("temp_rs_to_rslow = %lld, batt_esr = %lld, esr_actual = %lld\n",
+		pr_info_ratelimited("temp_rs_to_rslow = %lld, batt_esr = %lld, esr_actual = %lld\n",
 				temp_rs_to_rslow, battery_esr, esr_actual);
 	}
 
@@ -3277,21 +3277,21 @@ static int estimate_battery_age(struct fg_chip *chip, int *actual_capacity)
 		+ chip->cutoff_voltage;
 
 	if (fg_debug_mask & FG_AGING)
-		pr_info("ocv_cutoff_new = %lld, ocv_cutoff_aged = %lld\n",
+		pr_info_ratelimited("ocv_cutoff_new = %lld, ocv_cutoff_aged = %lld\n",
 				ocv_cutoff_new, ocv_cutoff_aged);
 
 	soc_cutoff_new = lookup_soc_for_ocv(chip, ocv_cutoff_new);
 	soc_cutoff_aged = lookup_soc_for_ocv(chip, ocv_cutoff_aged);
 
 	if (fg_debug_mask & FG_AGING)
-		pr_info("aged soc = %d, new soc = %d\n",
+		pr_info_ratelimited("aged soc = %d, new soc = %d\n",
 				soc_cutoff_aged, soc_cutoff_new);
 	unusable_soc = soc_cutoff_aged - soc_cutoff_new;
 
 	*actual_capacity = div64_s64(((int64_t)chip->nom_cap_uah)
 				* (1000 - unusable_soc), 1000);
 	if (fg_debug_mask & FG_AGING)
-		pr_info("nom cap = %d, actual cap = %d\n",
+		pr_info_ratelimited("nom cap = %d, actual cap = %d\n",
 				chip->nom_cap_uah, *actual_capacity);
 
 	return rc;
