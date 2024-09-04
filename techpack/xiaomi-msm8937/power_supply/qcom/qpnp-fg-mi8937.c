@@ -3315,7 +3315,7 @@ static void xiaomi_santoni_battery_age_work_extra(struct work_struct *work)
 	int capacity = 0;
 	static int count_error = 0;
 
-	pr_info("wingtech battery_age_work count_error=%d\n", count_error);
+	pr_info_ratelimited("wingtech battery_age_work count_error=%d\n", count_error);
 
 	rc = fg_mem_read(chip, reg, fg_data[8].address,
 			fg_data[8].len, fg_data[8].offset, 0);
@@ -3323,7 +3323,7 @@ static void xiaomi_santoni_battery_age_work_extra(struct work_struct *work)
 		pr_err("Tmie 1 Failed to update temp data\n");
 	} else{
 		vin_error = reg[0] | (reg[1] << 8)|(reg[2] << 16) | (reg[3] << 24);
-		pr_info("REG[560]=%x %x %x %x,vin_error=%x\n",
+		pr_info_ratelimited("REG[560]=%x %x %x %x,vin_error=%x\n",
 				reg[0], reg[1], reg[2], reg[3], vin_error);
 
 		capacity = get_prop_capacity(chip);
@@ -3337,13 +3337,13 @@ static void xiaomi_santoni_battery_age_work_extra(struct work_struct *work)
 				vin_error2 = 0xFF;
 			} else {
 				vin_error2 = reg1[0] | (reg1[1] << 8)|(reg1[2] << 16) | (reg1[3] << 24);
-				pr_info("REG2[560]=%x %x %x %x, vin_error=%x\n", reg1[0], reg1[1], reg1[2], reg1[3], vin_error2);
+				pr_info_ratelimited("REG2[560]=%x %x %x %x, vin_error=%x\n", reg1[0], reg1[1], reg1[2], reg1[3], vin_error2);
 			}
 			if (vin_error == 0 && vin_error2 == 0) {
-				pr_info("wingtech try to reset FG for error at capcity=%d\n", capacity);
+				pr_info_ratelimited("wingtech try to reset FG for error at capcity=%d\n", capacity);
 				count_error++;
 				fg_check_ima_error_handling(chip);
-				pr_info("End! wingtech try to reset FG for error\n");
+				pr_info_ratelimited("End! wingtech try to reset FG for error\n");
 			}
 		}
 	}
