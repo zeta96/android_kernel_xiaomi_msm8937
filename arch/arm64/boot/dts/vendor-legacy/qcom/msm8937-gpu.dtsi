@@ -136,6 +136,10 @@
 				reg = <1>;
 				qcom,mempool-page-size = <65536>;
 			};
+
+		/* Disable GPU Mempools */
+		/delete-node/ qcom,gpu-mempools;
+
 		};
 
 #ifdef CONFIG_CORESIGHT
