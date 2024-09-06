@@ -3,3 +3,4 @@ ccflags-y += -I $(srctree)/techpack/camera-legacy-m/common
 ccflags-y += -I $(srctree)/techpack/camera-legacy-m/sensor/io
 ccflags-y += -I $(srctree)/techpack/camera-legacy-m/sensor/cci
 obj-$(CONFIG_MSMB_CAMERA) += msm_actuator.o
+ccflags-y += -Wno-enum-conversion
