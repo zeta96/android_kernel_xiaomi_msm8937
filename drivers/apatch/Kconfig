@@ -16,6 +16,8 @@ config APATCH_SUPPORT
     
     select KALLSYMS_ALL
     
+    select KALLSYMS_BASE_RELATIVE
+
     select SYSFS_SYSCALL
     
     select SIGNALFD
