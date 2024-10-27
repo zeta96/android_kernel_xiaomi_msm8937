@@ -31,7 +31,6 @@
 #include <linux/iopoll.h>
 #include <linux/msm-bus.h>
 #include <linux/pm_runtime.h>
-#include <trace/events/mmc.h>
 #include <linux/clk/qcom.h>
 
 #include "sdhci-msm.h"
@@ -6064,8 +6063,6 @@ defer_disable_host_irq:
 	sdhci_msm_disable_controller_clock(host);
 
 skip_clk_gating:
-	trace_sdhci_msm_runtime_suspend(mmc_hostname(host->mmc), 0,
-			ktime_to_us(ktime_sub(ktime_get(), start)));
 	return 0;
 }
 
@@ -6099,8 +6096,6 @@ skip_clk_ungating:
 defer_enable_host_irq:
 	enable_irq(msm_host->pwr_irq);
 
-	trace_sdhci_msm_runtime_resume(mmc_hostname(host->mmc), 0,
-			ktime_to_us(ktime_sub(ktime_get(), start)));
 	return 0;
 }
 
@@ -6124,8 +6119,6 @@ out:
 			sdhci_cfg_irq(host, false, true);
 	}
 
-	trace_sdhci_msm_suspend(mmc_hostname(host->mmc), ret,
-			ktime_to_us(ktime_sub(ktime_get(), start)));
 	return ret;
 }
 
@@ -6150,8 +6143,6 @@ out:
 			sdhci_cfg_irq(host, true, true);
 	}
 
-	trace_sdhci_msm_resume(mmc_hostname(host->mmc), ret,
-			ktime_to_us(ktime_sub(ktime_get(), start)));
 	return ret;
 }
 
