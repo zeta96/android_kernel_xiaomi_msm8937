@@ -20,7 +20,6 @@
 #include <linux/mmc/card.h>
 #include <linux/mmc/mmc.h>
 #include <linux/reboot.h>
-#include <trace/events/mmc.h>
 
 #include "core.h"
 #include "card.h"
@@ -2571,8 +2570,6 @@ static int _mmc_suspend(struct mmc_host *host, bool is_suspend)
 
 	mmc_claim_host(host);
 
-	mmc_log_string(host, "Enter\n");
-
 	if (mmc_card_suspended(host->card))
 		goto out;
 
@@ -2593,7 +2590,6 @@ static int _mmc_suspend(struct mmc_host *host, bool is_suspend)
 		mmc_card_set_suspended(host->card);
 	}
 out:
-	mmc_log_string(host, "Exit err: %d\n", err);
 	mmc_release_host(host);
 	if (err)
 		mmc_resume_clk_scaling(host);
@@ -2693,16 +2689,12 @@ out:
 static int mmc_suspend(struct mmc_host *host)
 {
 	int err;
-	ktime_t start = ktime_get();
-
+	
 	err = _mmc_suspend(host, true);
 	if (!err) {
 		pm_runtime_disable(&host->card->dev);
 		pm_runtime_set_suspended(&host->card->dev);
 	}
-
-	trace_mmc_suspend(mmc_hostname(host), err,
-			ktime_to_us(ktime_sub(ktime_get(), start)));
 	return err;
 }
 
@@ -2722,7 +2714,6 @@ static int _mmc_resume(struct mmc_host *host)
 		return err;
 	}
 
-	mmc_log_string(host, "Enter\n");
 	mmc_power_up(host, host->card->ocr);
 	while (retries) {
 		if (mmc_can_sleepawake(host)) {
@@ -2752,7 +2743,6 @@ static int _mmc_resume(struct mmc_host *host)
 	}
 	mmc_card_clr_suspended(host->card);
 
-	mmc_log_string(host, "Exit err %d\n", err);
 	mmc_release_host(host);
 
 	err = mmc_resume_clk_scaling(host);
@@ -2772,12 +2762,9 @@ static int _mmc_deferred_resume(struct mmc_host *host)
 		goto out;
 	}
 
-	mmc_log_string(host, "Enter\n");
 	mmc_power_up(host, host->card->ocr);
 	err = mmc_init_card(host, host->card->ocr, host->card);
 	mmc_card_clr_suspended(host->card);
-
-	mmc_log_string(host, "Exit err %d\n", err);
 
 	err = mmc_resume_clk_scaling(host);
 	if (err)
@@ -2814,7 +2801,6 @@ static int mmc_shutdown(struct mmc_host *host)
 	if (mmc_card_mmc(card))
 		mmc_send_pon(card);
 
-	mmc_log_string(host, "done err %d\n", err);
 	return err;
 }
 
@@ -2824,16 +2810,11 @@ static int mmc_shutdown(struct mmc_host *host)
 static int mmc_resume(struct mmc_host *host)
 {
 	int err = 0;
-	ktime_t start = ktime_get();
 
 	err = _mmc_resume(host);
 	pm_runtime_set_active(&host->card->dev);
 	pm_runtime_mark_last_busy(&host->card->dev);
 	pm_runtime_enable(&host->card->dev);
-	trace_mmc_resume(mmc_hostname(host), err,
-			ktime_to_us(ktime_sub(ktime_get(), start)));
-
-	mmc_log_string(host, "Done\n");
 
 	return err;
 }
@@ -2850,8 +2831,6 @@ static int mmc_deferred_resume(struct mmc_host *host)
 	pm_runtime_mark_last_busy(&host->card->dev);
 	pm_runtime_enable(&host->card->dev);
 
-	mmc_log_string(host, "Done\n");
-
 	return err;
 }
 
@@ -2861,7 +2840,6 @@ static int mmc_deferred_resume(struct mmc_host *host)
 static int mmc_runtime_suspend(struct mmc_host *host)
 {
 	int err;
-	ktime_t start = ktime_get();
 
 	if (!(host->caps & MMC_CAP_AGGRESSIVE_PM))
 		return 0;
@@ -2870,10 +2848,7 @@ static int mmc_runtime_suspend(struct mmc_host *host)
 	if (err)
 		pr_err("%s: error %d doing aggressive suspend\n",
 			mmc_hostname(host), err);
-	trace_mmc_runtime_suspend(mmc_hostname(host), err,
-			ktime_to_us(ktime_sub(ktime_get(), start)));
 
-	mmc_log_string(host, "done err %d\n", err);
 	return err;
 }
 
@@ -2883,16 +2858,12 @@ static int mmc_runtime_suspend(struct mmc_host *host)
 static int mmc_runtime_resume(struct mmc_host *host)
 {
 	int err;
-	ktime_t start = ktime_get();
 
 	err = _mmc_resume(host);
 	if (err && err != -ENOMEDIUM)
 		pr_err("%s: error %d doing runtime resume\n",
 			mmc_hostname(host), err);
 
-	trace_mmc_runtime_resume(mmc_hostname(host), err,
-			ktime_to_us(ktime_sub(ktime_get(), start)));
-	mmc_log_string(host, "done err %d\n", err);
 	return 0;
 }
 
