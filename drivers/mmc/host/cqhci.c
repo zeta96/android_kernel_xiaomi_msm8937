@@ -111,15 +111,6 @@ static void cqhci_dumpregs(struct cqhci_host *cq_host)
 	if (cq_host->offset_changed)
 		offset = CQE_V5_VENDOR_CFG;
 
-	mmc_log_string(mmc,
-	"CQHCI_CTL=0x%08x CQHCI_IS=0x%08x CQHCI_ISTE=0x%08x CQHCI_ISGE=0x%08x CQHCI_TDBR=0x%08x CQHCI_TCN=0x%08x CQHCI_DQS=0x%08x CQHCI_DPT=0x%08x CQHCI_TERRI=0x%08x CQHCI_CRI=0x%08x CQHCI_CRA=0x%08x CQHCI_CRDCT=0x%08x\n",
-	cqhci_readl(cq_host, CQHCI_CTL), cqhci_readl(cq_host, CQHCI_IS),
-	cqhci_readl(cq_host, CQHCI_ISTE), cqhci_readl(cq_host, CQHCI_ISGE),
-	cqhci_readl(cq_host, CQHCI_TDBR), cqhci_readl(cq_host, CQHCI_TCN),
-	cqhci_readl(cq_host, CQHCI_DQS), cqhci_readl(cq_host, CQHCI_DPT),
-	cqhci_readl(cq_host, CQHCI_TERRI), cqhci_readl(cq_host, CQHCI_CRI),
-	cqhci_readl(cq_host, CQHCI_CRA), cqhci_readl(cq_host, CQHCI_CRDCT));
-
 	CQHCI_DUMP("============ CQHCI REGISTER DUMP ===========\n");
 
 	CQHCI_DUMP("Caps:      0x%08x | Version:  0x%08x\n",
@@ -320,7 +311,6 @@ static void __cqhci_enable(struct cqhci_host *cq_host)
 	cqhci_set_irqs(cq_host, CQHCI_IS_MASK);
 
 	cq_host->activated = true;
-	mmc_log_string(mmc, "CQ enabled\n");
 }
 
 static void __cqhci_disable(struct cqhci_host *cq_host)
@@ -335,7 +325,6 @@ static void __cqhci_disable(struct cqhci_host *cq_host)
 
 	cq_host->activated = false;
 
-	mmc_log_string(cq_host->mmc, "CQ disabled\n");
 }
 
 int cqhci_suspend(struct mmc_host *mmc)
@@ -421,7 +410,6 @@ static void cqhci_off(struct mmc_host *mmc)
 		pr_err("%s: cqhci: CQE stuck on\n", mmc_hostname(mmc));
 	else {
 		pr_debug("%s: cqhci: CQE off\n", mmc_hostname(mmc));
-		mmc_log_string(mmc, "cqhci: CQE off\n");
 	}
 	mmc->cqe_on = false;
 }
@@ -687,7 +675,6 @@ static int cqhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
 	if (!mmc->cqe_on) {
 		cqhci_writel(cq_host, 0, CQHCI_CTL);
 		mmc->cqe_on = true;
-		mmc_log_string(mmc, "cqhci: CQE on\n");
 		pr_debug("%s: cqhci: CQE on\n", mmc_hostname(mmc));
 		if (cqhci_readl(cq_host, CQHCI_CTL) && CQHCI_HALT) {
 			pr_err("%s: cqhci: CQE failed to exit halt state\n",
@@ -741,7 +728,6 @@ static int cqhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
 		cqhci_dumpregs(cq_host);
 		BUG();
 	}
-	mmc_log_string(mmc, "tag: %d\n", tag);
 	/* Make sure descriptors are ready before ringing the doorbell */
 	wmb();
 	cqhci_writel(cq_host, 1 << tag, CQHCI_TDBR);
@@ -829,8 +815,6 @@ static void cqhci_error_irq(struct mmc_host *mmc, u32 status, int cmd_error,
 
 	pr_err("%s: cqhci: error IRQ status: 0x%08x cmd error %d data error %d TERRI: 0x%08x\n",
 		 mmc_hostname(mmc), status, cmd_error, data_error, terri);
-	mmc_log_string(mmc, "%s: cqhci: status:0x%08x TERRI:0x%08x\n",
-		 mmc_hostname(mmc), status, terri);
 
 	/* Forget about errors when recovery has already been triggered */
 	if (cq_host->recovery_halt)
@@ -935,8 +919,6 @@ irqreturn_t cqhci_irq(struct mmc_host *mmc, u32 intmask, int cmd_error,
 	ice_err = status & (CQHCI_IS_GCE | CQHCI_IS_ICCE);
 
 	pr_debug("%s: cqhci: IRQ status: 0x%08x\n", mmc_hostname(mmc), status);
-	mmc_log_string(mmc, "CQIS: 0x%x cmd_error : %d data_err: %d\n",
-		status, cmd_error, data_error);
 
 	if ((status & CQHCI_IS_RED) || cmd_error || data_error || ice_err) {
 		pr_err("%s: cqhci: error IRQ status: 0x%08x cmd error %d data error %d\n",
@@ -963,7 +945,6 @@ irqreturn_t cqhci_irq(struct mmc_host *mmc, u32 intmask, int cmd_error,
 			/* complete the corresponding mrq */
 			pr_debug("%s: cqhci: completing tag %lu\n",
 				 mmc_hostname(mmc), tag);
-			mmc_log_string(mmc, "completing tag -> %lu\n", tag);
 			cqhci_finish_mrq(mmc, tag);
 		}
 
@@ -1099,7 +1080,6 @@ static bool cqhci_halt(struct mmc_host *mmc, unsigned int timeout)
 	if (!ret)
 		pr_warn("%s: cqhci: Failed to halt\n", mmc_hostname(mmc));
 
-	mmc_log_string(mmc, "halt done with ret %d\n", ret);
 	return ret;
 }
 
@@ -1240,7 +1220,6 @@ static void cqhci_recovery_finish(struct mmc_host *mmc)
 	cqhci_set_irqs(cq_host, CQHCI_IS_MASK);
 
 	pr_debug("%s: cqhci: recovery done\n", mmc_hostname(mmc));
-	mmc_log_string(mmc, "recovery done\n");
 }
 
 static const struct mmc_cqe_ops cqhci_cqe_ops = {
