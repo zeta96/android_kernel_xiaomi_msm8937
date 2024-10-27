@@ -42,9 +42,6 @@
 #include <xiaomi-msm8937/mach.h>
 #endif
 
-#define CREATE_TRACE_POINTS
-#include <trace/events/mmc.h>
-
 #include "core.h"
 #include "card.h"
 #include "bus.h"
@@ -409,10 +406,6 @@ int mmc_clk_update_freq_deferred(struct mmc_host *host,
 	else
 		pr_err("%s: %s: failed (%d) at freq=%lu\n",
 			mmc_hostname(host), __func__, err, freq);
-
-	mmc_log_string(host,
-			"deferred clock scale state %d freq %lu done with err %d\n",
-			state, freq, err);
 	/*
 	 * CQE would be enabled as part of CQE issueing path
 	 * So no need to unhalt it explicitly
@@ -493,8 +486,6 @@ int mmc_clk_update_freq(struct mmc_host *host,
 	else
 		pr_err("%s: %s: failed (%d) at freq=%lu\n",
 			mmc_hostname(host), __func__, err, freq);
-	mmc_log_string(host, "clock scale state %d freq %lu done with err %d\n",
-			state, freq, err);
 	/*
 	 * CQE would be enabled as part of CQE issueing path
 	 * So no need to unhalt it explicitly
@@ -621,9 +612,7 @@ void mmc_deferred_scaling(struct mmc_host *host)
 	pr_debug("%s: doing deferred frequency change (%lu) (%s)\n",
 				mmc_hostname(host),
 				target_freq, current->comm);
-	mmc_log_string(host, "doing deferred frequency change (%lu) (%s)\n",
-			target_freq, current->comm);
-
+	
 	err = mmc_clk_update_freq_deferred(host, target_freq,
 		clk_scaling.state);
 	if (err && err != -EAGAIN)
@@ -1057,7 +1046,6 @@ void mmc_request_done(struct mmc_host *host, struct mmc_request *mrq)
 
 	mmc_complete_cmd(mrq);
 
-	trace_mmc_request_done(host, mrq);
 
 	/*
 	 * We list various conditions for the command to be considered
@@ -1150,8 +1138,6 @@ static void __mmc_start_request(struct mmc_host *host, struct mmc_request *mrq)
 		 */
 		reinit_completion(&mrq->cmd_completion);
 	}
-
-	trace_mmc_request_start(host, mrq);
 
 	if (host->cqe_on)
 		host->cqe_ops->cqe_off(host);
@@ -1374,8 +1360,6 @@ int mmc_cqe_start_req(struct mmc_host *host, struct mmc_request *mrq)
 	if (err)
 		goto out_err;
 
-	trace_mmc_request_start(host, mrq);
-
 	return 0;
 
 out_err:
@@ -1406,8 +1390,6 @@ void mmc_cqe_request_done(struct mmc_host *host, struct mmc_request *mrq)
 	if ((mrq->cmd && mrq->cmd->error == -EILSEQ) ||
 	    (mrq->data && mrq->data->error == -EILSEQ))
 		mmc_retune_needed(host);
-
-	trace_mmc_request_done(host, mrq);
 
 	if (mrq->cmd) {
 		pr_debug("%s: CQE req done (direct CMD%u): %d\n",
@@ -1857,21 +1839,6 @@ static inline void mmc_set_ios(struct mmc_host *host)
 
 	host->ops->set_ios(host, ios);
 	if (ios->old_rate != ios->clock) {
-		if (likely(ios->clk_ts)) {
-			char trace_info[80];
-
-			snprintf(trace_info, 80,
-				"%s: freq_KHz %d --> %d | t = %d",
-				mmc_hostname(host), ios->old_rate / 1000,
-				ios->clock / 1000, jiffies_to_msecs(
-					(long)jiffies - (long)ios->clk_ts));
-			trace_mmc_clk(trace_info);
-			mmc_log_string(host,
-				"freq_KHz %d --> %d | t = %d",
-				ios->old_rate / 1000,
-				ios->clock / 1000, jiffies_to_msecs(
-					(long)jiffies - (long)ios->clk_ts));
-		}
 		ios->old_rate = ios->clock;
 		ios->clk_ts = jiffies;
 	}
