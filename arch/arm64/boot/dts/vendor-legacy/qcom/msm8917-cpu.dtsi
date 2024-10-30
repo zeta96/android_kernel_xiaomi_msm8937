@@ -38,7 +38,7 @@
 			enable-method = "psci";
 			cpu-release-addr = <0x0 0x90000000>;
 			capacity-dmips-mhz = <1024>;
-			sched-energy-costs = <&CPU_COST_0>;
+			sched-energy-costs = <&CPU_COST_0 &CLUSTER_COST_0>;
 			next-level-cache = <&L2_1>;
 			#cooling-cells = <2>;
 			L2_1: l2-cache {
@@ -62,7 +62,7 @@
 			enable-method = "psci";
 			cpu-release-addr = <0x0 0x90000000>;
 			capacity-dmips-mhz = <1024>;
-			sched-energy-costs = <&CPU_COST_0>;
+			sched-energy-costs = <&CPU_COST_0 &CLUSTER_COST_0>;
 			next-level-cache = <&L2_1>;
 			#cooling-cells = <2>;
 			L1_I_101: l1-icache {
@@ -81,7 +81,7 @@
 			enable-method = "psci";
 			cpu-release-addr = <0x0 0x90000000>;
 			capacity-dmips-mhz = <1024>;
-			sched-energy-costs = <&CPU_COST_0>;
+			sched-energy-costs = <&CPU_COST_0 &CLUSTER_COST_0>;
 			next-level-cache = <&L2_1>;
 			#cooling-cells = <2>;
 			L1_I_102: l1-icache {
@@ -100,7 +100,7 @@
 			enable-method = "psci";
 			cpu-release-addr = <0x0 0x90000000>;
 			capacity-dmips-mhz = <1024>;
-			sched-energy-costs = <&CPU_COST_0>;
+			sched-energy-costs = <&CPU_COST_0 &CLUSTER_COST_0>;
 			next-level-cache = <&L2_1>;
 			#cooling-cells = <2>;
 			L1_I_103: l1-icache {
@@ -118,14 +118,24 @@
 
 		CPU_COST_0: core-cost0 {
 			busy-cost-data = <
-				 656 159
-				 682 172
-				 748 207
-				 827 244
-				 853 256
-				 893 283
-				 958 327
-				1024 343
+				  960000  214
+				 1094400  266
+				 1248000  380
+				 1401000  478
+			>;
+			idle-cost-data = <
+				100 80 60 40
+			>;
+		};
+		CLUSTER_COST_0: cluster-cost0 {
+			busy-cost-data = <
+				 960000 53
+				1094400 61
+				1248000 71
+				1401000 85
+			>;
+			idle-cost-data = <
+				4 3 2 1
 			>;
 		};
 	};
