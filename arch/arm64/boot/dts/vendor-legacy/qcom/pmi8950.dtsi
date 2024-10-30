@@ -624,6 +624,7 @@
 		};
 	};
 
+#if defined(CONFIG_MSM_BCL_PERIPHERAL_CTL_LEGACY) || defined(CONFIG_MSM_BCL_PERIPHERAL_CTL)
 	ibat-high {
 		polling-delay-passive = <100>;
 		polling-delay = <0>;
@@ -670,6 +671,7 @@
 			};
 		};
 	};
+#endif
 };
 
 &soc {
