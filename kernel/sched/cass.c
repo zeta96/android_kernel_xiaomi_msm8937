@@ -348,8 +348,14 @@ static int cass_select_task_rq(struct task_struct *p, int prev_cpu,
 	return cass_best_cpu(p, prev_cpu, sync, rt);
 }
 
+#ifdef CONFIG_SCHED_WALT
+static int cass_select_task_rq_fair(struct task_struct *p, int prev_cpu,
+				    int sd_flag, int wake_flags,
+				    int sibling_count_hint)
+#else
 static int cass_select_task_rq_fair(struct task_struct *p, int prev_cpu,
 				    int sd_flag, int wake_flags, int sibling_count_hint)
+#endif
 {
 	return cass_select_task_rq(p, prev_cpu, wake_flags, false);
 }
