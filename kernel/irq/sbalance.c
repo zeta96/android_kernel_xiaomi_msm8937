@@ -211,7 +211,7 @@ static bool find_min_bd(const cpumask_t *mask, unsigned int max_intrs,
 static void balance_irqs(void)
 {
 	static cpumask_t cpus;
-	struct bal_domain *bd, *max_bd, *min_bd;
+	struct bal_domain *bd = NULL, *max_bd, *min_bd;
 	unsigned int intrs, max_intrs;
 	bool moved_irq = false;
 	struct bal_irq *bi;
