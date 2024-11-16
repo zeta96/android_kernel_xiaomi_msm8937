@@ -5344,7 +5344,9 @@ int mdss_fb_do_ioctl(struct fb_info *info, unsigned int cmd,
 		break;
 	case MSMFB_ATOMIC_COMMIT:
 #ifdef CONFIG_DEVFREQ_BOOST
-		devfreq_boost_kick(DEVFREQ_MSM_CPUBW);
+		if (df_boost_within_input(3250)) {
+			devfreq_boost_kick(DEVFREQ_MSM_CPUBW);
+		}
 #endif
 		ret = mdss_fb_atomic_commit_ioctl(info, argp, file);
 		break;
