@@ -1057,6 +1057,8 @@ static ssize_t pl_store(struct gov_attr_set *attr_set, const char *buf,
 {
 	struct sugov_tunables *tunables = to_sugov_tunables(attr_set);
 
+	return count;
+
 	if (kstrtobool(buf, &tunables->pl))
 		return -EINVAL;
 
@@ -1271,6 +1273,7 @@ static int sugov_init(struct cpufreq_policy *policy)
 	tunables->down_rate_limit_us = 1000;
 	tunables->hispeed_load = DEFAULT_HISPEED_LOAD;
 	tunables->hispeed_freq = 0;
+	tunables->pl = 0;
 
 	switch (policy->cpu) {
 	default:
