@@ -51,7 +51,9 @@
 #include <linux/timer.h>
 #include <linux/freezer.h>
 #include <linux/compat.h>
+#ifndef CONFIG_QUEUED_SPINLOCKS
 #include <linux/delay.h>
+#endif
 
 #include <linux/uaccess.h>
 
@@ -179,7 +181,9 @@ struct hrtimer_clock_base *lock_hrtimer_base(const struct hrtimer *timer,
 			raw_spin_unlock_irqrestore(&base->cpu_base->lock, *flags);
 		}
 		cpu_relax();
+#ifndef CONFIG_QUEUED_SPINLOCKS
 		ndelay(TIMER_LOCK_TIGHT_LOOP_DELAY_NS);
+#endif
 	}
 }
 
@@ -1258,7 +1262,9 @@ int hrtimer_cancel(struct hrtimer *timer)
 		if (ret >= 0)
 			return ret;
 		cpu_relax();
+#ifndef CONFIG_QUEUED_SPINLOCKS
 		ndelay(TIMER_LOCK_TIGHT_LOOP_DELAY_NS);
+#endif
 	}
 }
 EXPORT_SYMBOL_GPL(hrtimer_cancel);
