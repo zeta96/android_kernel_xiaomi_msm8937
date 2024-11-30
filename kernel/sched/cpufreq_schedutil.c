@@ -608,7 +608,7 @@ static inline bool sugov_cpu_is_busy(struct sugov_cpu *sg_cpu) { return false; }
 
 #define NL_RATIO 75
 #define DEFAULT_HISPEED_LOAD 85
-#define DEFAULT_CPU0_RTG_BOOST_FREQ 0
+#define DEFAULT_CPU0_RTG_BOOST_FREQ 1000000
 #define DEFAULT_CPU4_RTG_BOOST_FREQ 0
 #define DEFAULT_CPU7_RTG_BOOST_FREQ 0
 static void sugov_walt_adjust(struct sugov_cpu *sg_cpu, unsigned long *util,
@@ -1029,8 +1029,6 @@ static ssize_t rtg_boost_freq_store(struct gov_attr_set *attr_set,
 	struct sugov_policy *sg_policy;
 	unsigned long boost_util;
 	unsigned long flags;
-
-	return count;
 
 	if (kstrtouint(buf, 10, &val))
 		return -EINVAL;
