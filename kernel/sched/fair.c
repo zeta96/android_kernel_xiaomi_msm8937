@@ -12169,7 +12169,7 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags)
 
 			rq_lock_irqsave(rq, &rf);
 			update_rq_clock(rq);
-			cpu_load_update_idle(rq);
+	//		cpu_load_update_idle(rq);
 			rq_unlock_irqrestore(rq, &rf);
 
 			if (flags & NOHZ_BALANCE_KICK)
