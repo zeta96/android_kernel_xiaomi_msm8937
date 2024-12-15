@@ -637,6 +637,8 @@ rate_limit_us_store(struct gov_attr_set *attr_set, const char *buf, size_t count
 	struct sugov_policy *sg_policy;
 	unsigned int rate_limit_us;
 
+	return count;
+	
 	if (kstrtouint(buf, 10, &rate_limit_us))
 		return -EINVAL;
 
