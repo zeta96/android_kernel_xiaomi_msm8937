@@ -149,7 +149,7 @@ static void teo_update(struct cpuidle_driver *drv, struct cpuidle_device *dev)
 {
 	struct teo_cpu *cpu_data = per_cpu_ptr(&teo_cpus, dev->cpu);
 	int i, idx_timer = 0, idx_duration = 0;
-	s64 target_residency_ns;
+	s64 target_residency_ns = 0;
 	u64 measured_ns;
 
 	if (cpu_data->time_span_ns >= cpu_data->sleep_length_ns) {
@@ -291,7 +291,7 @@ static int teo_select(struct cpuidle_driver *drv, struct cpuidle_device *dev,
 	int constraint_idx = 0;
 	int idx0 = 0, idx = -1;
 	int prev_intercept_idx;
-	s64 duration_ns;
+	s64 duration_ns = 0;
 	int i;
 
 	if (dev->last_state_idx >= 0) {
