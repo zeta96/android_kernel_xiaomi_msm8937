@@ -396,13 +396,13 @@ static ssize_t compatible_all_set(struct device *dev,
 		rc = select_pin_ctl(fpc1020, "fpc1020_irq_active");
 		if (rc)
 			goto exit;
-		irqf = IRQF_TRIGGER_RISING | IRQF_ONESHOT;
 		if (1) {
 			dev_err(dev, "enable-wakeup request irq %d\n", fpc1020->compatible_enabled);
-			irqf |= IRQF_NO_SUSPEND;
+			irqf = IRQF_NO_SUSPEND;
 			device_init_wakeup(dev, 1);
 			rc = devm_request_threaded_irq(dev, gpio_to_irq(fpc1020->irq_gpio),
-				NULL, fpc1020_irq_handler, irqf,
+				NULL, fpc1020_irq_handler,
+				irqf | IRQF_TRIGGER_RISING | IRQF_ONESHOT,
 				dev_name(dev), fpc1020);
 			if (rc) {
 				dev_err(dev, "could not request irq %d\n",
