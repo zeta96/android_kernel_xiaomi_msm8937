@@ -3271,7 +3271,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
 			    unsigned long weight)
 {
 	bool curr = cfs_rq->curr == se;
-	u64 avruntime;
+	u64 avruntime = 0;
 
 	if (se->on_rq) {
 		/* commit outstanding execution time */
@@ -7424,7 +7424,7 @@ static void find_best_target(struct sched_domain *sd, cpumask_t *cpus,
 	int best_idle_cpu = -1;
 	int target_cpu = -1;
 	int backup_cpu = -1;
-	int i, start_cpu;
+	int i = 0, start_cpu;
 	long spare_wake_cap, most_spare_wake_cap = 0;
 	int most_spare_cap_cpu = -1;
 	int prev_cpu = task_cpu(p);
