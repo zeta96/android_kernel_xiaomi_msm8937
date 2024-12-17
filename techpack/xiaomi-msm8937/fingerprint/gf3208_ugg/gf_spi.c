@@ -54,7 +54,7 @@
 #define VER_MINOR   2
 #define PATCH_LEVEL 1
 
-#define WAKELOCK_HOLD_TIME 500
+#define WAKELOCK_HOLD_TIME 400
 
 #define GF_SPIDEV_NAME     "goodix,fingerprint-ugg"
 #define GF_DEV_NAME            "goodix_fp"
