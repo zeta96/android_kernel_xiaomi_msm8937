@@ -398,7 +398,6 @@ static ssize_t compatible_all_set(struct device *dev,
 			goto exit;
 		if (1) {
 			dev_err(dev, "enable-wakeup request irq %d\n", fpc1020->compatible_enabled);
-			irqf = IRQF_NO_SUSPEND;
 			device_init_wakeup(dev, 1);
 			rc = devm_request_threaded_irq(dev, gpio_to_irq(fpc1020->irq_gpio),
 				NULL, fpc1020_irq_handler,
