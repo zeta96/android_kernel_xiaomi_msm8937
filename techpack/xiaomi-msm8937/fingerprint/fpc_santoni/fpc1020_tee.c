@@ -348,7 +348,7 @@ static ssize_t compatible_all_set(struct device *dev,
 {
 	int rc;
 	int i;
-	int irqf;
+	int irqf = 0;
 	struct  fpc1020_data *fpc1020 = dev_get_drvdata(dev);
 	dev_err(dev, "compatible all enter %d\n", fpc1020->compatible_enabled);
 	if (!strncmp(buf, "enable", strlen("enable")) && fpc1020->compatible_enabled != 1) {
