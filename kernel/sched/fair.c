@@ -5753,7 +5753,7 @@ bool cpu_overutilized(int cpu)
 #else
 bool __cpu_overutilized(int cpu, int delta)
 {
-	return (capacity_of(cpu) * 1024) < ((cpu_util(cpu) + delta) * capacity_margin);
+	return !fits_capacity((cpu_util(cpu) + delta), capacity_of(cpu));
 }
 
 bool cpu_overutilized(int cpu)
