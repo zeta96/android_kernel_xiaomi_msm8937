@@ -8170,7 +8170,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu,
 		delta = task_util(p);
 #endif
 	if (task_placement_boost_enabled(p) || fbt_env.need_idle || boosted ||
-	    is_rtg || __cpu_overutilized(prev_cpu, delta) ||
+	    is_rtg || cpu_overutilized(prev_cpu) ||
 #ifdef CONFIG_SCHED_WALT
 	    !task_fits_max(p, prev_cpu) || cpu_isolated(prev_cpu)) {
 #else
