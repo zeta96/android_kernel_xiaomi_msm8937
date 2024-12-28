@@ -174,6 +174,7 @@ static inline bool task_is_booster(struct task_struct *tsk)
 	       !strcmp(comm, "perf@2.1-servic") ||
 	       !strcmp(comm, "perf@2.2-servic") ||
 	       !strcmp(comm, "iop@") ||
+	       !strcmp(comm, "PERFD-SERVER") ||
 	       !strcmp(comm, "init.qcom.post_");
 }
 #endif /* _LINUX_BINFMTS_H */
