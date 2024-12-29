@@ -33,6 +33,7 @@ source "techpack/Kconfig"
 
 config KSU_STATIC_HOOKS
 	bool "KernelSU: Force to use static hooks"
+	depends on !KPROBES || !KSU_SUSFS_SUS_SU
 	default n
 	help
 	  Say Y here to force KernelSU to use static hooks.
