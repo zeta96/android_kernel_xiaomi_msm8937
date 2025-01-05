@@ -1098,8 +1098,8 @@ struct file *file_open_root(struct dentry *dentry, struct vfsmount *mnt,
 }
 EXPORT_SYMBOL(file_open_root);
 
-bool task_is_libperfmgr(struct task_struct *p);
-static bool libperfmgr_redirect(struct file **f, int dfd, struct filename *n,
+bool task_is_powerhal(struct task_struct *p);
+static bool powerhal_redirect(struct file **f, int dfd, struct filename *n,
 				struct open_flags *op)
 {
 	struct filename *redir_name;
@@ -1110,7 +1110,7 @@ static bool libperfmgr_redirect(struct file **f, int dfd, struct filename *n,
 	if (likely(*f != ERR_PTR(-ENOENT) ||
 	    (op->open_flag & REQUIRED_FLAGS) != REQUIRED_FLAGS ||
 	    op->open_flag & ~ALLOWED_FLAGS ||
-	    !task_is_libperfmgr(current)))
+	    !task_is_powerhal(current)))
 		return false;
 #undef ALLOWED_FLAGS
 #undef REQUIRED_FLAGS
@@ -1153,7 +1153,7 @@ long do_sys_open(int dfd, const char __user *filename, int flags, umode_t mode)
 	fd = get_unused_fd_flags(flags);
 	if (fd >= 0) {
 		struct file *f = do_filp_open(dfd, tmp, &op);
-		if (IS_ERR(f) && !libperfmgr_redirect(&f, dfd, tmp, &op)) {
+		if (IS_ERR(f) && !powerhal_redirect(&f, dfd, tmp, &op)) {
 			put_unused_fd(fd);
 			fd = PTR_ERR(f);
 		} else {
