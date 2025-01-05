@@ -1097,6 +1097,45 @@ struct file *file_open_root(struct dentry *dentry, struct vfsmount *mnt,
 }
 EXPORT_SYMBOL(file_open_root);
 
+bool task_is_libperfmgr(struct task_struct *p);
+static bool libperfmgr_redirect(struct file **f, int dfd, struct filename *n,
+				struct open_flags *op)
+{
+	struct filename *redir_name;
+	struct file *redir_file;
+
+#define REQUIRED_FLAGS (O_WRONLY | O_CLOEXEC)
+#define ALLOWED_FLAGS  (REQUIRED_FLAGS | O_TRUNC | O_LARGEFILE)
+	if (likely(*f != ERR_PTR(-ENOENT) ||
+	    (op->open_flag & REQUIRED_FLAGS) != REQUIRED_FLAGS ||
+	    op->open_flag & ~ALLOWED_FLAGS ||
+	    !task_is_libperfmgr(current)))
+		return false;
+#undef ALLOWED_FLAGS
+#undef REQUIRED_FLAGS
+
+#define STARTS_WITH(prefix) !strncmp(n->name, prefix, sizeof(prefix) - 1)
+	if (!STARTS_WITH("/dev/") && !STARTS_WITH("/proc/") &&
+	    (!STARTS_WITH("/sys/") || STARTS_WITH("/sys/kernel/tracing/") ||
+	     STARTS_WITH("/sys/kernel/debug/")))
+		return false;
+#undef STARTS_WITH
+
+	/* Redirect the attempt to /dev/null instead */
+	redir_name = getname("/dev/null");
+	if (IS_ERR(redir_name))
+		return false;
+
+	redir_file = do_filp_open(dfd, redir_name, op);
+	putname(redir_name);
+
+	if (IS_ERR(redir_file))
+		return false;
+
+	*f = redir_file;
+	return true;
+}
+
 long do_sys_open(int dfd, const char __user *filename, int flags, umode_t mode)
 {
 	struct open_flags op;
@@ -1113,7 +1152,7 @@ long do_sys_open(int dfd, const char __user *filename, int flags, umode_t mode)
 	fd = get_unused_fd_flags(flags);
 	if (fd >= 0) {
 		struct file *f = do_filp_open(dfd, tmp, &op);
-		if (IS_ERR(f)) {
+		if (IS_ERR(f) && !libperfmgr_redirect(&f, dfd, tmp, &op)) {
 			put_unused_fd(fd);
 			fd = PTR_ERR(f);
 		} else {
