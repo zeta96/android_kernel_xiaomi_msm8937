@@ -2238,7 +2238,7 @@ int cpufreq_get_policy(struct cpufreq_policy *policy, unsigned int cpu)
 }
 EXPORT_SYMBOL(cpufreq_get_policy);
 
-bool task_is_libperfmgr(struct task_struct *p);
+bool task_is_powerhal(struct task_struct *p);
 /*
  * policy : current policy.
  * new_policy: policy to be set.
@@ -2259,7 +2259,7 @@ static int cpufreq_set_policy(struct cpufreq_policy *policy,
 	* because new_policy is a copy of policy with one field updated.
 	*/
 	if (new_policy->min > new_policy->max) {
-		if (!task_is_libperfmgr(current))
+		if (!task_is_powerhal(current))
 		new_policy->min = new_policy->max;
 	}
 
