@@ -157,6 +157,7 @@ static int two_hundred_fifty_five = 255;
 static unsigned int ns_per_sec = NSEC_PER_SEC;
 static unsigned int __read_mostly sysctl_sched_group_upmigrate_pct = 100;
 static unsigned int __read_mostly sysctl_sched_group_downmigrate_pct = 95;
+static unsigned int __read_mostly sysctl_sched_boost = 0;
 #endif /* CONFIG_PELT_COMPATIBILITY_LAYER */
 
 #ifdef CONFIG_SCHED_WALT
