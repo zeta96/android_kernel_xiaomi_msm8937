@@ -119,8 +119,16 @@ int sched_proc_update_handler(struct ctl_table *table, int write,
 		loff_t *ppos);
 #endif
 
+#ifdef CONFIG_PELT_COMPATIBILITY_LAYER
+static inline int sched_boost_handler(struct ctl_table *t, int w,
+			void __user *b, size_t *l, loff_t *p)
+{
+	return 0;
+}
+#else
 extern int sched_boost_handler(struct ctl_table *table, int write,
 			void __user *buffer, size_t *lenp, loff_t *ppos);
+#endif
 /*
  *  control realtime throttling:
  *
