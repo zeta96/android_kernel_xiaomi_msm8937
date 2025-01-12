@@ -666,8 +666,6 @@ asmlinkage __visible void __init start_kernel(void)
 	/* This must be after timekeeping is initialized */
 	random_init();
 
-	/* These make use of the fully initialized rng */
-	kfence_init();
 	boot_init_stack_canary();
 
 	perf_event_init();
