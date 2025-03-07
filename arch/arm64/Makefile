@@ -98,6 +98,19 @@ else
 TEXT_OFFSET := 0x00080000
 endif
 
+ifeq ($(filter y, $(CONFIG_ARCH_MSM8917) $(CONFIG_ARCH_MSM8937) $(CONFIG_ARCH_MSM8953) $(CONFIG_ARCH_SDM439)), y)
+ifeq ($(cc-name),clang)
+KBUILD_CFLAGS   += -march=armv8-a -mtune=cortex-a53
+KBUILD_AFLAGS   += -march=armv8-a -mtune=cortex-a53
+ifeq ($(CONFIG_LD_IS_LLD), y)
+KBUILD_LDFLAGS  += -mllvm -mcpu=cortex-a53
+endif
+else
+KBUILD_CFLAGS   += -march=armv8-a -mtune=cortex-a53
+KBUILD_AFLAGS   += -march=armv8-a -mtune=cortex-a53
+endif
+
+endif
 ifeq ($(CONFIG_KASAN_SW_TAGS), y)
 KASAN_SHADOW_SCALE_SHIFT := 4
 else
