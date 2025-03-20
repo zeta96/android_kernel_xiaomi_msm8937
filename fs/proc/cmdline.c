@@ -77,14 +77,18 @@ static void patch_flag(char *cmd, const char *flag, const char *val)
 	char *start, *end;
 
 	start = strstr(cmd, flag);
-	if (!start)
+	if (!start) {
+        	pr_warn_ratelimited("patch_flag: Flag %s not found in cmdline!\n", flag);
 		return;
+	}
 
 	flag_len = strlen(flag);
 	val_len = strlen(val);
 	end = start + flag_len + strcspn(start + flag_len, " ");
 	memmove(start + flag_len + val_len, end, strlen(end) + 1);
 	memcpy(start + flag_len, val, val_len);
+
+	pr_info_ratelimited("Patched flag: %s -> %s\n", flag, val);
 }
 
 static void patch_safetynet_flags(char *cmd)
@@ -93,6 +97,8 @@ static void patch_safetynet_flags(char *cmd)
 	patch_flag(cmd, "androidboot.verifiedbootstate=", "green");
 	patch_flag(cmd, "androidboot.veritymode=", "enforcing");
 	patch_flag(cmd, "androidboot.vbmeta.device_state=", "locked");
+
+	pr_info("proc_command_line after SafetyNet patch: %s\n", cmd);
 }
 
 static bool in_recovery;
@@ -115,6 +121,8 @@ static int __init proc_cmdline_init(void)
 	if (!in_recovery)
 		patch_safetynet_flags(proc_command_line);
 
+	pr_info("Final proc_command_line: %s\n", proc_command_line);
+	
 	proc_create_single("cmdline", 0, NULL, cmdline_proc_show);
 	return 0;
 }
