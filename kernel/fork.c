@@ -2369,13 +2369,9 @@ long _do_fork(unsigned long clone_flags,
 	long nr;
 
 #ifdef CONFIG_DEVFREQ_BOOST
-        /*
-         * Boost to the max for 50 ms when userspace launches an app. Only
-         * if within 1.5s input timeout.
-         */
-	if (task_is_zygote(current) && df_boost_within_input(1500)) {
+	/* Boost DDR bus to the max for 50 ms when userspace launches an app */
+	if (task_is_zygote(current))
 		devfreq_boost_kick_max(DEVFREQ_MSM_CPUBW, 50);
-	}
 #endif
 
 	/*
