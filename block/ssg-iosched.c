@@ -829,7 +829,7 @@ SHOW_FUNCTION(ssg_async_write_shallow_depth_show, ssg->async_write_shallow_depth
 static ssize_t __FUNC(struct elevator_queue *e, const char *page, size_t count)	\
 {									\
 	struct ssg_data *ssg = e->elevator_data;			\
-	int __data;							\
+	int __data = 0;							\
 	ssg_var_store(&__data, (page));					\
 	if (__data < (MIN))						\
 		__data = (MIN);						\
