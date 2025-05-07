@@ -173,9 +173,9 @@ config F2FS_REPORT_FAKE_KERNEL_VERSION
 config F2FS_FAKE_KERNEL_RELEASE
 	string "Kernel release for fsck.f2fs"
 	depends on F2FS_REPORT_FAKE_KERNEL_VERSION
-	default "4.19.325-perf"
+	default "4.19.325-perf+"
 
 config F2FS_FAKE_KERNEL_VERSION
 	string "Kernel version for fsck.f2fs"
 	depends on F2FS_REPORT_FAKE_KERNEL_VERSION
-	default "#1 SMP PREEMPT Fri Jul 8 19:22:39 CST 2022"
+	default "#1 SMP PREEMPT Wed Dec 11 19:11:59 UTC 2024"
