@@ -79,4 +79,4 @@ static int __init xiaomi_msm8937_fingerprint_init(void)
 
 	return 0;
 }
-module_init(xiaomi_msm8937_fingerprint_init);
+late_initcall(xiaomi_msm8937_fingerprint_init);
