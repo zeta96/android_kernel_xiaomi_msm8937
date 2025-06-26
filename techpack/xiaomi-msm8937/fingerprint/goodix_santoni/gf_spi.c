@@ -417,7 +417,7 @@ static irqreturn_t gf_irq(int irq, void *handle)
 	char temp = GF_NET_EVENT_IRQ;
 	gf_dbg("enter irq %s\n", __func__);
 
-	__pm_wakeup_event(gf_dev->ttw_wl, 400);
+	__pm_wakeup_event(gf_dev->ttw_wl, 1000);
 
 	xiaomi_santoni_sendnlmsg(&temp);
 #elif defined (GF_FASYNC)
