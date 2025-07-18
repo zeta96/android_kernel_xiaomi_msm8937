@@ -1511,8 +1511,6 @@ static int security_context_to_sid_core(struct selinux_state *state,
 {
 	struct policydb *policydb;
 	struct sidtab *sidtab;
-	char scontext2_onstack[SZ_128] __aligned(sizeof(long));
-	char str_onstack[SZ_128] __aligned(sizeof(long));
 	char *scontext2, *str = NULL;
 	struct context context;
 	int rc = 0;
@@ -1522,15 +1520,9 @@ static int security_context_to_sid_core(struct selinux_state *state,
 		return -EINVAL;
 
 	/* Copy the string to allow changes and ensure a NUL terminator */
-	if (scontext_len < sizeof(scontext2_onstack)) {
-		scontext2 = scontext2_onstack;
-		memcpy(scontext2, scontext, scontext_len);
-		scontext2[scontext_len] = '\0';
-	} else {
-		scontext2 = kmemdup_nul(scontext, scontext_len, gfp_flags);
-		if (!scontext2)
-			return -ENOMEM;
-	}
+	scontext2 = kmemdup_nul(scontext, scontext_len, gfp_flags);
+	if (!scontext2)
+		return -ENOMEM;
 
 	if (!selinux_initialized(state)) {
 		int i;
@@ -1548,16 +1540,10 @@ static int security_context_to_sid_core(struct selinux_state *state,
 
 	if (force) {
 		/* Save another copy for storing in uninterpreted form */
-		if (scontext2 == scontext2_onstack) {
-			str = str_onstack;
-			memcpy(str, scontext2, scontext_len + 1);
-		} else {
-			str = kstrdup(scontext2, gfp_flags);
-			if (!str) {
-				rc = -ENOMEM;
-				goto out;
-			}
-		}
+		rc = -ENOMEM;
+		str = kstrdup(scontext2, gfp_flags);
+		if (!str)
+			goto out;
 	}
 	read_lock(&state->ss->policy_rwlock);
 	policydb = &state->ss->policydb;
@@ -1566,23 +1552,17 @@ static int security_context_to_sid_core(struct selinux_state *state,
 				      &context, def_sid);
 	if (rc == -EINVAL && force) {
 		context.str = str;
-		context.len = scontext_len + 1;
+		context.len = strlen(str) + 1;
 		str = NULL;
 	} else if (rc)
 		goto out_unlock;
 	rc = context_struct_to_sid(state, &context, sid);
-
-	if (context.str == str_onstack)
-		context.str = NULL;
-
 	context_destroy(&context);
 out_unlock:
 	read_unlock(&state->ss->policy_rwlock);
 out:
-	if (scontext2 != scontext2_onstack) {
-		kfree(scontext2);
-		kfree(str);
-	}
+	kfree(scontext2);
+	kfree(str);
 	return rc;
 }
 
