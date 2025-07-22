@@ -118,23 +118,6 @@ static int kgsl_pool_size_total(void)
 	return total;
 }
 
-static struct page *_kgsl_alloc_pages(int order)
-{
-	gfp_t gfp_mask = kgsl_gfp_mask(order);
-	struct page *page = alloc_pages(gfp_mask, order);
-
-	if (page)
-		mod_node_page_state(page_pgdat(page), NR_GPU_HEAP, 1 << order);
-
-	return page;
-}
-
-static void _kgsl_free_pages(struct page *page, int order)
-{
-	mod_node_page_state(page_pgdat(page), NR_GPU_HEAP, -(1 << order));
-	__free_pages(page, order);
-}
-
 /*
  * This will shrink the specified pool by num_pages or its pool_size,
  * whichever is smaller.
@@ -152,7 +135,7 @@ _kgsl_pool_shrink(struct kgsl_page_pool *pool, int num_pages)
 		struct page *page = _kgsl_pool_get_page(pool);
 
 		if (page != NULL) {
-			_kgsl_free_pages(page, pool->pool_order);
+			__free_pages(page, pool->pool_order);
 			pcount += (1 << pool->pool_order);
 		} else {
 			/* Break as this pool is empty */
@@ -290,7 +273,9 @@ int kgsl_pool_alloc_page(int *page_size, struct page **pages,
 
 	/* If the pool is not configured get pages from the system */
 	if (!kgsl_num_pools) {
-		page = _kgsl_alloc_pages(order);
+		gfp_t gfp_mask = kgsl_gfp_mask(order);
+
+		page = alloc_pages(gfp_mask, order);
 		if (page == NULL) {
 			/* Retry with lower order pages */
 			if (order > 0) {
@@ -315,7 +300,9 @@ int kgsl_pool_alloc_page(int *page_size, struct page **pages,
 			 * Fall back to direct allocation in case
 			 * pool with zero order is not present
 			 */
-			page = _kgsl_alloc_pages(order);
+			gfp_t gfp_mask = kgsl_gfp_mask(order);
+
+			page = alloc_pages(gfp_mask, order);
 			if (page == NULL)
 				return -ENOMEM;
 			kgsl_zero_page(page, order);
@@ -328,6 +315,8 @@ int kgsl_pool_alloc_page(int *page_size, struct page **pages,
 
 	/* Allocate a new page if not allocated from pool */
 	if (page == NULL) {
+		gfp_t gfp_mask = kgsl_gfp_mask(order);
+
 		/* Only allocate non-reserved memory for certain pools */
 		if (!pool->allocation_allowed && pool_idx > 0) {
 			size = PAGE_SIZE <<
@@ -335,7 +324,8 @@ int kgsl_pool_alloc_page(int *page_size, struct page **pages,
 			goto eagain;
 		}
 
-		page = _kgsl_alloc_pages(order);
+		page = alloc_pages(gfp_mask, order);
+
 		if (!page) {
 			if (pool_idx > 0) {
 				/* Retry with lower order pages */
@@ -390,7 +380,7 @@ void kgsl_pool_free_page(struct page *page)
 	}
 
 	/* Give back to system as not added to pool */
-	_kgsl_free_pages(page, page_order);
+	__free_pages(page, page_order);
 }
 
 /*
@@ -423,7 +413,9 @@ static void kgsl_pool_reserve_pages(void)
 				kgsl_pools[i].reserved_pages);
 		for (j = 0; j < page_count; j++) {
 			int order = kgsl_pools[i].pool_order;
-			page = _kgsl_alloc_pages(order);
+			gfp_t gfp_mask = kgsl_gfp_mask(order);
+
+			page = alloc_pages(gfp_mask, order);
 			if (page != NULL)
 				_kgsl_pool_add_page(&kgsl_pools[i], page);
 		}
