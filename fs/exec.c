@@ -1927,7 +1927,7 @@ void set_dumpable(struct mm_struct *mm, int value)
 	} while (cmpxchg(&mm->flags, old, new) != old);
 }
 
-#ifdef CONFIG_KSU
+#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
 extern bool ksu_execveat_hook __read_mostly;
 extern __attribute__((hot)) int ksu_handle_execve_sucompat(int *fd,
 			       const char __user **filename_user,
@@ -1945,7 +1945,7 @@ SYSCALL_DEFINE3(execve,
 		const char __user *const __user *, argv,
 		const char __user *const __user *, envp)
 {
-#ifdef CONFIG_KSU
+#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK)
 	if (unlikely(ksu_execveat_hook))
 		ksu_handle_execve_ksud(filename, argv);
 	else
@@ -1972,7 +1972,7 @@ COMPAT_SYSCALL_DEFINE3(execve, const char __user *, filename,
 	const compat_uptr_t __user *, argv,
 	const compat_uptr_t __user *, envp)
 {
-#ifdef CONFIG_KSU // 32-bit su and 32-on-64 support
+#if defined(CONFIG_KSU) && !defined(CONFIG_KSU_KPROBES_HOOK) // 32-bit su and 32-on-64 support
 	if (unlikely(ksu_execveat_hook))
 		ksu_handle_compat_execve_ksud(filename, argv);
 	else
