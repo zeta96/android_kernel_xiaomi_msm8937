@@ -8136,7 +8136,7 @@ calc_energy(struct em_calc *ec, struct task_struct *p, struct perf_domain *pd,
 	 * ratio (sum_util / cpu_capacity) is already enough to scale the EM
 	 * reported power consumption at the (eventually clamped) cpu_capacity.
 	 */
-	ec->energy_util = schedutil_cpu_util(cpu, util_cfs, NULL, NULL);
+	ec->energy_util = effective_cpu_util(cpu, util_cfs, NULL, NULL);
 
 	/*
 	 * Performance domain frequency: utilization clamping must be considered
@@ -8144,7 +8144,7 @@ calc_energy(struct em_calc *ec, struct task_struct *p, struct perf_domain *pd,
 	 * NOTE: in case RT tasks are running, by default the FREQUENCY_UTIL's
 	 * utilization can be max OPP.
 	 */
-	ec->cpu_util = schedutil_cpu_util(cpu, util_cfs, &min, &max);
+	ec->cpu_util = effective_cpu_util(cpu, util_cfs, &min, &max);
 	/* Task's uclamp can modify min and max value */
 	if (uclamp_is_used()) {
 		min = max(min, uclamp_eff_value(p, UCLAMP_MIN));
