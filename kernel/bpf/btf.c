@@ -4938,7 +4938,7 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
 			   struct btf_func_model *m)
 {
 	const struct btf_param *args;
-	const struct btf_type *t;
+	const struct btf_type *t = NULL;
 	u32 i, nargs;
 	int ret;
 
