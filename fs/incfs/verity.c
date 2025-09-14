@@ -639,7 +639,7 @@ static int ensure_verity_info(struct inode *inode, struct file *filp)
 {
 	struct mem_range verity_file_digest;
 	u8 *signature = NULL;
-	size_t sig_size;
+	size_t sig_size = 0;
 	int err = 0;
 
 	/* See if this file's verity file digest is already cached */
