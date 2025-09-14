@@ -491,7 +491,7 @@ static void log_read_one_record(struct read_log *rl, struct read_log_state *rs)
 {
 	union log_record *record =
 		(union log_record *)((u8 *)rl->rl_ring_buf + rs->next_offset);
-	size_t record_size;
+	size_t record_size = 0;
 
 	switch (record->full_record.type) {
 	case FULL:
