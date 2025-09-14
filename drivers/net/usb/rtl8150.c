@@ -741,7 +741,7 @@ static netdev_tx_t rtl8150_start_xmit(struct sk_buff *skb,
 static void set_carrier(struct net_device *netdev)
 {
 	rtl8150_t *dev = netdev_priv(netdev);
-	short tmp;
+	short tmp = 0;
 
 	get_registers(dev, CSCR, 2, &tmp);
 	if (tmp & CSCR_LINK_STATUS)
