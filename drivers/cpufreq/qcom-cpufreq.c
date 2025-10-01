@@ -46,22 +46,24 @@ static int set_cpu_freq(struct cpufreq_policy *policy, unsigned int new_freq,
 	int ret = 0;
 	struct cpufreq_freqs freqs;
 	unsigned long rate;
+	int cpu;
+
+    cpu = cpumask_first(policy->cpus);
 
 	freqs.old = policy->cur;
 	freqs.new = new_freq;
-	freqs.cpu = policy->cpu;
 
-	trace_cpu_frequency_switch_start(freqs.old, freqs.new, policy->cpu);
+	trace_cpu_frequency_switch_start(freqs.old, freqs.new, cpu);
 	cpufreq_freq_transition_begin(policy, &freqs);
 
 	rate = new_freq * 1000;
-	rate = clk_round_rate(cpu_clk[policy->cpu], rate);
-	ret = clk_set_rate(cpu_clk[policy->cpu], rate);
+	rate = clk_round_rate(cpu_clk[cpu], rate);
+	ret = clk_set_rate(cpu_clk[cpu], rate);
 	cpufreq_freq_transition_end(policy, &freqs, ret);
 	if (!ret) {
 		arch_set_freq_scale(policy->related_cpus, new_freq,
 				    policy->cpuinfo.max_freq);
-		trace_cpu_frequency_switch_end(policy->cpu);
+		trace_cpu_frequency_switch_end(cpu);
 	}
 
 	return ret;
