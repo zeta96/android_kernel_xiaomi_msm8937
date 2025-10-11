@@ -869,8 +869,8 @@ void binder_alloc_deferred_release(struct binder_alloc *alloc)
 			__free_page(alloc->pages[i].page_ptr);
 			page_count++;
 		}
-		kvfree(alloc->pages);
 	}
+        kvfree(alloc->pages);
 	mutex_unlock(&alloc->mutex);
 	if (alloc->vma_vm_mm)
 		mmdrop(alloc->vma_vm_mm);
