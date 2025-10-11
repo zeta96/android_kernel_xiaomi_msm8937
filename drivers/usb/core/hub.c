@@ -55,7 +55,7 @@
  * Give SS hubs 200ms time after wake to train downstream links before
  * assuming no port activity and allowing hub to runtime suspend back.
  */
-#define USB_SS_PORT_U0_WAKE_TIME        200  /* ms */
+#define USB_SS_PORT_U0_WAKE_TIME	200  /* ms */
 
 extern int deny_new_usb;
 
