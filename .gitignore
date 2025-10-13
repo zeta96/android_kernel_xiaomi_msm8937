@@ -137,4 +137,3 @@ kernel/configs/android-*.cfg
 
 # Object directory
 out/
->>>>>>> 4a4c0b95eab6 (Makefile: Set KBUILD_OUTPUT to out by default)
