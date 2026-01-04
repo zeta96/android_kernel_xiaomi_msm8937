@@ -767,6 +767,7 @@ static int prefer_idle_write_wrapper(struct cgroup_subsys_state *css,
 }
 #endif
 
+#ifdef CONFIG_STUNE_ASSIST
 static struct cftype files[] = {
 #ifdef CONFIG_SCHED_WALT
 	{
@@ -792,6 +793,7 @@ static struct cftype files[] = {
 	},
 	{ }	/* terminate */
 };
+#endif
 
 static void
 schedtune_boostgroup_init(struct schedtune *st, int idx)
