@@ -1215,6 +1215,14 @@ config SCHED_AUTOGROUP
 	  desktop applications.  Task group autogeneration is currently based
 	  upon task session.
 
+config SCHED_TUNE_DUMMY
+    bool "Dummy schedtune cgroup"
+    depends on CGROUPS
+    default y
+    help
+      Dummy schedtune cgroup for Android userspace compatibility
+      when CONFIG_SCHED_TUNE is disabled.
+
 config SCHED_TUNE
 	bool "Boosting for CFS tasks (EXPERIMENTAL)"
 	depends on !UCLAMP_TASK
