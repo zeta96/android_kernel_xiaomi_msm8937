@@ -46,7 +46,7 @@ static void set_boost_policy(int type)
 		return;
 	}
 
-	if (CONFIG_ARCH_SDM660) {
+	if (num_possible_cpus() > 4) {
 		boost_policy = SCHED_BOOST_ON_BIG;
 		return;
 	}
