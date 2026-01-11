@@ -2835,7 +2835,7 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags,
 	       int sibling_count_hint)
 {
 	unsigned long flags;
-	int cpu, success = 0;
+	int cpu = 0, success = 0;
 
 	preempt_disable();
 	if (p == current) {
