@@ -1376,7 +1376,7 @@ static int __zram_bvec_read(struct zram *zram, struct page *page, u32 index,
 			    zram_entry_handle(zram, entry), ZS_MM_RO);
 	if (size == PAGE_SIZE) {
 		dst = kmap_atomic(page);
-		copy_page(dst, src);
+		memcpy(dst, src, PAGE_SIZE);
 		kunmap_atomic(dst);
 		ret = 0;
 	} else {
