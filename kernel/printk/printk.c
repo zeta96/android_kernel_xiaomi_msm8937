@@ -829,6 +829,22 @@ static ssize_t devkmsg_write(struct kiocb *iocb, struct iov_iter *from)
 		}
 	}
 
+	if (strncmp(line, "batteryd", sizeof("batteryd")-1) == 0 ||
+		strncmp(line, "healthd", sizeof("healthd")-1) == 0 ||
+		strncmp(line, "cacert", sizeof("cacert")-1) == 0 ||
+		strncmp(line, "logd", sizeof("logd")-1) == 0 ||
+		strncmp(line, "LibBpfLoader", sizeof("LibBpfLoader")-1) == 0 ||
+		strnstr(line, "Untracked pid", len) ||
+		strnstr(line, "Untracked process", len) ||
+		strnstr(line, "dumpstate", len) ||
+		strnstr(line, "DM_DEV_STATUS", len) ||
+		strnstr(line, "usb_gadget", len) ||
+		strnstr(line, "isolated_app", len) ||
+		strnstr(line, "servicemanager", len) ||
+		strnstr(line, "ServiceManager", len) ||
+		strnstr(line, "service_manager", len))
+		return len;
+
 	printk_emit(facility, level, NULL, 0, "%s", line);
 	return ret;
 }
