@@ -1521,8 +1521,12 @@ static int security_context_to_sid_core(struct selinux_state *state,
 	if (!scontext_len)
 		return -EINVAL;
 
+	/* Sanity check */
+	if (scontext_len >= PAGE_SIZE)
+    	return -EINVAL;
+	
 	/* Copy the string to allow changes and ensure a NUL terminator */
-	if (scontext_len < sizeof(scontext2_onstack)) {
+	if (scontext_len  + 1 <= sizeof(scontext2_onstack)) {
 		scontext2 = scontext2_onstack;
 		memcpy(scontext2, scontext, scontext_len);
 		scontext2[scontext_len] = '\0';
@@ -1548,7 +1552,8 @@ static int security_context_to_sid_core(struct selinux_state *state,
 
 	if (force) {
 		/* Save another copy for storing in uninterpreted form */
-		if (scontext2 == scontext2_onstack) {
+		if (scontext2 == scontext2_onstack &&
+			scontext_len + 1 <= sizeof(str_onstack)) {
 			str = str_onstack;
 			memcpy(str, scontext2, scontext_len + 1);
 		} else {
@@ -1579,10 +1584,10 @@ static int security_context_to_sid_core(struct selinux_state *state,
 out_unlock:
 	read_unlock(&state->ss->policy_rwlock);
 out:
-	if (scontext2 != scontext2_onstack) {
-		kfree(scontext2);
-		kfree(str);
-	}
+	if (scontext2 && scontext2 != scontext2_onstack)
+	    kfree(scontext2);	
+	if (str && str != str_onstack && str != scontext2)
+	    kfree(str);	
 	return rc;
 }
 
