@@ -361,6 +361,9 @@ extern unsigned long mem_cgroup_shrink_node(struct mem_cgroup *mem,
 						pg_data_t *pgdat,
 						unsigned long *nr_scanned);
 extern unsigned long shrink_all_memory(unsigned long nr_pages);
+extern unsigned long shrink_slab(gfp_t gfp_mask, int nid,
+				 struct mem_cgroup *memcg,
+				 int priority);
 extern int vm_swappiness;
 extern int sysctl_swap_ratio;
 extern int sysctl_swap_ratio_enable;
