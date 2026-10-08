@@ -16,6 +16,7 @@
 #include <linux/sched/cpufreq.h>
 #include <trace/events/power.h>
 #include <linux/sched/sysctl.h>
+#include <linux/binfmts.h>
 
 struct sugov_tunables {
 	struct gov_attr_set	attr_set;
@@ -580,7 +581,9 @@ static ssize_t up_rate_limit_us_store(struct gov_attr_set *attr_set,
 	struct sugov_policy *sg_policy;
 	unsigned int rate_limit_us;
 
-	return count;
+	/* Apply init protection, else values will get overwritten */
+	if (task_is_booster(current))
+		return count;
 	
 	if (kstrtouint(buf, 10, &rate_limit_us))
 		return -EINVAL;
@@ -602,7 +605,9 @@ static ssize_t down_rate_limit_us_store(struct gov_attr_set *attr_set,
 	struct sugov_policy *sg_policy;
 	unsigned int rate_limit_us;
 
-	return count;
+	/* Apply init protection, else values will get overwritten */
+	if (task_is_booster(current))
+		return count;
 	
 	if (kstrtouint(buf, 10, &rate_limit_us))
 		return -EINVAL;
