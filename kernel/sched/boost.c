@@ -16,6 +16,10 @@
  * boost is responsible for disabling it as well.
  */
 
+#ifdef CONFIG_ENERGY_MODEL
+extern unsigned int sysctl_sched_energy_aware;
+#endif
+
 unsigned int sysctl_sched_boost; /* To/from userspace */
 unsigned int sched_boost_type; /* currently activated sched boost */
 enum sched_boost_policy boost_policy;
@@ -67,12 +71,18 @@ static void sched_full_throttle_boost_enter(void)
 {
 	core_ctl_set_boost(true);
 	//walt_enable_frequency_aggregation(true);
+#ifdef CONFIG_ENERGY_MODEL
+	sysctl_sched_energy_aware = 0;
+#endif
 }
 
 static void sched_full_throttle_boost_exit(void)
 {
 	core_ctl_set_boost(false);
 	//walt_enable_frequency_aggregation(false);
+#ifdef CONFIG_ENERGY_MODEL
+	sysctl_sched_energy_aware = 1;
+#endif
 }
 
 static void sched_conservative_boost_enter(void)
