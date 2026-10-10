@@ -8439,9 +8439,9 @@ static int __init smbchg_init(void)
 
 #if IS_ENABLED(CONFIG_MACH_XIAOMI_SANTONI)
 	if (xiaomi_msm8937_mach_get() == XIAOMI_MSM8937_MACH_SANTONI) {
-		smbchg_default_hvdcp_icl_ma = 1200;
-		smbchg_default_hvdcp3_icl_ma = 2000;
-		smbchg_default_dcp_icl_ma = 2000;
+		smbchg_default_hvdcp_icl_ma = 1500;
+		smbchg_default_hvdcp3_icl_ma = 1800;
+		smbchg_default_dcp_icl_ma = 1800;
 		if (strcmp(xiaomi_msm8937_mach_get_wingtech_board_id(), "S88536CA2") == 0) {
 			smbchg_default_hvdcp3_icl_ma = 1500;
 			smbchg_default_dcp_icl_ma = 1500;
