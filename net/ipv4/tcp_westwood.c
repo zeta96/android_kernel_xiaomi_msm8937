@@ -169,7 +169,7 @@ static void tcp_westwood_cong_control(struct sock *sk, const struct rate_sample 
 			bdp = (u64)bw * w->min_rtt_us;
 			w->last_bdp = (((bdp * CAL_UNIT) >> CAL_SCALE) + BW_UNIT - 1) / BW_UNIT;
 		}
-		tp->snd_ssthresh = max_t(u32, 2, tp->snd_cwnd >> 1);
+		tp->snd_ssthresh = max_t(u32, 2, w->last_bdp);
 	} else if (state == TCP_CA_Open && prev_state != TCP_CA_Open) {
 		tp->snd_cwnd = w->last_bdp;
 		tcp_westwood_cwnd_reduction(sk, rs->acked_sacked, 1);
