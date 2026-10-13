@@ -136,7 +136,7 @@ static void tcp_westwood_cong_control(struct sock *sk, const struct rate_sample 
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct westwood *w = inet_csk_ca(sk);
 	u8 prev_state = w->prev_ca_state, state = inet_csk(sk)->icsk_ca_state;
-	u64 bw, bdp;
+	u64 bw = 0, bdp = 0;
 
 	if (!before(rs->prior_delivered, w->next_rtt_delivered)) {
 		w->next_rtt_delivered = tp->delivered;
