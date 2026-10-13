@@ -22,6 +22,8 @@
  * ssthresh after packet loss. The probing phase is as the original Reno.
  */
 
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
 #include <linux/mm.h>
 #include <linux/module.h>
 #include <linux/skbuff.h>
@@ -177,7 +179,8 @@ static void tcp_westwood_cong_control(struct sock *sk, const struct rate_sample 
 		tcp_reno_cong_avoid(sk, 0, rs->acked_sacked);
 	}
 	if (debug)
-		printk("##st:%d->%d bw:%llu last_bdp:%d cwnd:%d minrtt:%d\n", prev_state, state, bw, w->last_bdp, tp->snd_cwnd, w->min_rtt_us);
+		pr_debug("st:%d->%d bw:%llu last_bdp:%u cwnd:%u minrtt:%u\n", 
+         prev_state, state, bw, w->last_bdp, tp->snd_cwnd, w->min_rtt_us);
 }
 
 /* Extract info for Tcp socket info provided via netlink. */
