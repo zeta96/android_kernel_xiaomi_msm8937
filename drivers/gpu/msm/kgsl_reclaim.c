@@ -69,7 +69,8 @@ int kgsl_reclaim_to_pinned_state(
 		struct kgsl_process_private *process)
 {
 	struct kgsl_mem_entry *entry;
-	int next = 0, valid_entry, ret = 0;
+	struct kgsl_mem_entry *valid_entry;
+	int next = 0, ret = 0;
 
 	if (!kgsl_reclaim)
 		return 0;
@@ -80,7 +81,7 @@ int kgsl_reclaim_to_pinned_state(
 		goto done;
 
 	for ( ; ; ) {
-		valid_entry = 0;
+		valid_entry = NULL;
 		spin_lock(&process->mem_lock);
 		entry = idr_get_next(&process->mem_idr, &next);
 		if (entry == NULL) {
@@ -207,7 +208,8 @@ static int kgsl_reclaim_callback(struct notifier_block *nb,
 	struct kgsl_process_private *p, *process = NULL;
 	struct kgsl_mem_entry *entry;
 	struct kgsl_memdesc *memdesc;
-	int valid_entry, next = 0, ret = NOTIFY_OK;
+	struct kgsl_mem_entry *valid_entry;
+	int next = 0, ret = NOTIFY_OK;
 
 	spin_lock(&kgsl_driver.proclist_lock);
 	list_for_each_entry(p, &kgsl_driver.process_list, list) {
@@ -244,7 +246,7 @@ static int kgsl_reclaim_callback(struct notifier_block *nb,
 		if (test_bit(KGSL_PROC_STATE, &process->state))
 			break;
 
-		valid_entry = 0;
+		valid_entry = NULL;
 		spin_lock(&process->mem_lock);
 		entry = idr_get_next(&process->mem_idr, &next);
 		if (entry == NULL) {
