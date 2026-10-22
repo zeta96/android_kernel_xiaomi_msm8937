@@ -96,13 +96,13 @@ void sched_update_cpu_freq_min_max(const cpumask_t *cpus, u32 fmin, u32 fmax)
 	}
 
 	if (max_freq && fmax && fmax < max_freq) {
-		max_capacity = arch_scale_cpu_capacity(NULL, cpu);
+		max_capacity = arch_scale_cpu_capacity(cpu);
 		capacity = (fmax * max_capacity) / max_freq;
 		if (capacity < max_capacity)
 			th_pressure = max_capacity - capacity;
 	}
 
-	topology_set_thermal_pressure(cpus, th_pressure);
+	arch_set_thermal_pressure(cpus, th_pressure);
 }
 EXPORT_SYMBOL_GPL(sched_update_cpu_freq_min_max);
 #endif
