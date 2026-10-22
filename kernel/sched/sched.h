@@ -3272,7 +3272,7 @@ static inline unsigned long thermal_cap(int cpu)
 {
 #ifdef CONFIG_SCHED_THERMAL_PRESSURE
 	unsigned long th_pressure = arch_scale_thermal_pressure(cpu);
-	unsigned long cpu_cap = arch_scale_cpu_capacity(NULL, cpu);
+	unsigned long cpu_cap = arch_scale_cpu_capacity(cpu);
 
 	return cpu_cap - min(th_pressure, cpu_cap);
 #else
