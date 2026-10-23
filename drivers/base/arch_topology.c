@@ -71,7 +71,7 @@ void topology_set_thermal_pressure(const struct cpumask *cpus,
 
 	for_each_cpu(cpu, cpus) {
 		WRITE_ONCE(per_cpu(thermal_pressure, cpu), th_pressure);
-	    pr_ratelimited("topology: CPU%d thermal pressure is %lu\n", cpu, th_pressure);
+	    printk_ratelimited("topology: CPU%d thermal pressure is %lu\n", cpu, th_pressure);
 	}
 }
 EXPORT_SYMBOL_GPL(topology_set_thermal_pressure);
