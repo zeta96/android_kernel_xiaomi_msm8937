@@ -1674,7 +1674,7 @@ config KALLSYMS
 config KALLSYMS_ALL
 	bool "Include all symbols in kallsyms"
 	select KALLSYMS
-	default y
+	default n
 	help
 	   Normally kallsyms only contains the symbols of functions for nicer
 	   OOPS messages and backtraces (i.e., symbols from the text and inittext
